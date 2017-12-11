@@ -23,21 +23,12 @@ public class GlowMod extends BaseMod {
     public static final float[] COLOR_T = {1f, 0, 0};
     public static final float[] COLOR_CT = {0, 0, 1f};
 
+    @Override
     public void tick() {
-        for (int i = 0; i < 64; i++) {
-            long currPlayer = Main.getMemory().getClient().readUnsignedInt(getOffsetVal("m_dwEntityList") + (i * 16));
-            if (currPlayer == 0) continue;
-            int currPlayerIndex = Main.getMemory().getProc().readInt(currPlayer + getStructOffset("m_iGlowIndex"));
-            int teamNum = Main.getMemory().getProc().readInt(currPlayer + getStructOffset("m_iTeamNum"));
-            float[] color = teamNum == Entity.TEAM_T ? COLOR_T : COLOR_CT;
-
-            Main.getMemory().getProc().writeFloat(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0x4), color[0]);
-            Main.getMemory().getProc().writeFloat(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0x8), color[1]);
-            Main.getMemory().getProc().writeFloat(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0xC), color[2]);
-            Main.getMemory().getProc().writeFloat(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0x10), 1f);
-
-            Main.getMemory().getProc().writeBoolean(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0x24), true);
-            Main.getMemory().getProc().writeBoolean(getOffset("m_dwGlowObject").readUnsignedInt(0) + ((currPlayerIndex * 0x38) + 0x25), false);
-        }
+        EntityManager.getInstance()
+                     .forEach(ent -> {
+                         float[] color = ent.getTeam() == Entity.TEAM_T ? COLOR_T : COLOR_CT;
+                         ent.writeGlow(color[0], color[1], color[2], 1f);
+                     });
     }
 }

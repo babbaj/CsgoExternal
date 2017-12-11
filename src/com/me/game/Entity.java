@@ -1,5 +1,6 @@
 package com.me.game;
 
+import com.me.memory.Offset;
 import com.me.memory.Pointer;
 import com.me.memory.OffsetManager;
 import com.me.utils.Vec2f;
@@ -55,6 +56,10 @@ public class Entity {
 
     public int getColor() {
         return (int)pointer.readUnsignedInt(getStructOffset("m_clrRender"));
+    }
+
+    public int getGlowIndex() {
+        return pointer.readInt(getStructOffset("m_iGlowIndex"));
     }
 
     public Vec3f getPos() {
@@ -115,6 +120,18 @@ public class Entity {
 
     public void writeSpotted(boolean b) {
         pointer.writeBoolean(b, getStructOffset("m_bSpotted"));
+    }
+
+    public void writeGlow(float r, float g, float b, float a) {
+        Pointer glowObj = new Pointer(getOffset("m_dwGlowObject").readUnsignedInt(0));
+        int glowIndex = getGlowIndex();
+        glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
+        glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
+        glowObj.writeFloat(b, (glowIndex * 0x38) + 0xC);
+        glowObj.writeFloat(a, (glowIndex * 0x38) + 0x10);
+
+        glowObj.writeBoolean(true, (glowIndex * 0x38) + 0x24);
+        glowObj.writeBoolean(false, (glowIndex * 0x38) + 0x25);
     }
 
 

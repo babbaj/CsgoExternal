@@ -64,7 +64,7 @@ public class Main {
     private static void setupMods() {
         ModManager modManager = ModManager.getInstance();
 
-        //modManager.registerMod(new EntityManagerService());
+        modManager.registerMod(new EntityManagerService());
         modManager.registerMod(new GlowMod());
         modManager.registerMod(new AntiFlashMod());
         //modManager.registerMod(new ESPMod());

@@ -107,7 +107,7 @@ public class Pointer {
 
 
     private void nullCheck() {
-        if (isNull()) throw new NullPointerException("NULL pointer");
+        if (isNull()) throw new NullPointerException("Bad pointer");
     }
 
     public boolean isNull() {

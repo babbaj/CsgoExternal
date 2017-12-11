@@ -9,6 +9,7 @@ import static com.me.memory.OffsetManager.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * Created by Babbaj on 12/1/2017.
@@ -31,18 +32,19 @@ public class EntityManager {
         LocalPlayer localPlayer = getLocalPlayer();
         // do we exist?
         if (localPlayer != null) {
-            int playerCount = getPlayerCount();
-            //if (playerCount > 250)
-                //throw new IllegalStateException(String.format("Player count too high! (%d), bad offset?", playerCount)); // if we find an impossible player count
-            for (int i = 0; i < 64/*playerCount*/; i++) {
-                long entityBase = OffsetManager.getOffset("m_dwEntityList").readUnsignedInt(0) + i * 16;
+            for (int i = 0; i < 64; i++) {
+                long entityBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
+                if (entityBase == 0) break;
                 Entity entity = new Entity(new Pointer(entityBase));
+                if (!entity.isValidEntity()) continue;
+
                 if (entity.equals(localPlayer) && !containsEntity(localPlayer)) {
                     this.entityList.add(localPlayer);
-                    System.out.printf("Added LocalPlayer %d, Index: %d, Size: %d\n", localPlayer.getPointer().getAddress(), i, this.entityList.size());
-                } else if(!entity.getPointer().isNull() && !containsEntity(entityBase) && entity.isValidEntity()) {
+                    System.out.printf("Added LocalPlayer %s, Size: %d\n", Long.toHexString(localPlayer.getPointer().getAddress()), this.entityList.size());
+
+                } else if(!entity.getPointer().isNull() && !containsEntity(entityBase)) {
                     this.entityList.add(entity);
-                    System.out.printf("Added entity %d, Index: %d, Size: %d\n", entity.getPointer().getAddress(), i, this.entityList.size());
+                    System.out.printf("Added entity %s, Size: %d\n", Long.toHexString(entity.getPointer().getAddress()), this.entityList.size());
                 }
 
             }
@@ -51,8 +53,17 @@ public class EntityManager {
         removeBadEntities();
     }
 
+    // clear the entity list
+    public void clearEntities() {
+        entityList.clear();
+    }
+
     private void removeBadEntities() {
         entityList.removeIf(ent -> !ent.isValidEntity());
+    }
+
+    public boolean containsEntity(Pointer p) {
+        return containsEntity(p.getAddress());
     }
 
     public boolean containsEntity(long base) {
@@ -66,6 +77,7 @@ public class EntityManager {
     }
 
     // get the number of players in the world
+    // TODO: fix this
     private int getPlayerCount() {
         return (int)getOffset("m_dwGlowObject").readUnsignedInt(0x4);
     }
@@ -74,19 +86,28 @@ public class EntityManager {
         return entityList.get(index);
     }
 
+    public List<Entity> getEntityList() {
+        return entityList;
+    }
+
     // get our local player entity
     public LocalPlayer getLocalPlayer() {
         return (LocalPlayer)entityList.stream()
                         .filter(ent -> ent instanceof LocalPlayer)
                         .findFirst()
                         .orElseGet(() -> {
-                        long p = Main.getMemory().getClient().address() + getOffset("m_dwLocalPlayer").getOffset();
+                        long p = getOffset("m_dwLocalPlayer").readUnsignedInt(0);
                         LocalPlayer player = new LocalPlayer(new Pointer(p));
                         if (player.getPointer().isNull()) return null;
                         return player;
                         });
     }
 
+    public void forEach(Consumer<Entity> consumer) {
+        entityList.stream()
+                  .filter(ent -> !(ent instanceof LocalPlayer))
+                  .forEach(consumer);
+    }
 
 
 }

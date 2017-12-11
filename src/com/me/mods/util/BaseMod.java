@@ -18,6 +18,11 @@ public class BaseMod {
     public BaseMod(String nameIn, String descriptionIn) {
         this.name = nameIn;
         this.description = descriptionIn;
+        onLoad();
+    }
+
+    public void onLoad() {
+
     }
 
     public void tick() {
