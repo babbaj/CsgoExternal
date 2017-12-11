@@ -1,15 +1,9 @@
 package com.me.mods;
 
-import com.me.Main;
 import com.me.game.Entity;
 import com.me.game.EntityManager;
 import com.me.mods.util.BaseMod;
 
-import java.util.Arrays;
-
-import static com.me.memory.OffsetManager.getOffset;
-import static com.me.memory.OffsetManager.getOffsetVal;
-import static com.me.memory.OffsetManager.getStructOffset;
 
 /**
  * Created by Babbaj on 12/6/2017.

@@ -61,6 +61,16 @@ public class Pointer {
         return Main.getMemory().getProc().readDouble(address + off);
     }
 
+    public String readString(int off) {
+        StringBuilder out = new StringBuilder();
+        char c;
+        while ((c = (char)Main.getMemory().getProc().readShort(address + off)) != 0) {
+            out.append(c);
+            off += 2;
+        }
+        return out.toString();
+    }
+
 
     //
     // Write to memory

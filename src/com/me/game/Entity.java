@@ -20,6 +20,7 @@ public class Entity {
 
     private Pointer pointer;
 
+
     public Entity(Pointer pointerIn) {
         this.pointer = pointerIn;
     }
@@ -112,6 +113,15 @@ public class Entity {
 
     public Pointer getBoneMatrix() {
         return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
+    }
+
+    public String getName() {
+        Pointer radarBase = getOffset("dwRadarBase").getAsPointer(0);
+        long radar = radarBase.readUnsignedInt(0x54);
+        int id = EntityManager.getInstance().getEntityList().indexOf(this);
+        Pointer namePointer = new Pointer(radar + ((0x1E0 * (id + 1 )) + 0x24));
+        String name = namePointer.readString(0);
+        return name;
     }
 
     public void writeColor(int color) {
