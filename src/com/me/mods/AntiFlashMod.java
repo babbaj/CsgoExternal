@@ -7,10 +7,10 @@ import com.me.mods.util.BaseMod;
 /**
  * Created by Babbaj on 12/5/2017.
  */
-public class AntiFlash extends BaseMod {
+public class AntiFlashMod extends BaseMod {
 
-    public AntiFlash() {
-        super("AntiFlash", "no flashbangs");
+    public AntiFlashMod() {
+        super("AntiFlashMod", "no flashbangs");
     }
 
     @Override

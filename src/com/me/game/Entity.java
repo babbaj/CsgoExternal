@@ -97,8 +97,16 @@ public class Entity {
         return new Vec3f(x, y, z);
     }
 
-    public long getBoneMatrix() {
-        return pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix"));
+    public Vec3f getBonePos(int bone) {
+        Pointer boneMatrix = getBoneMatrix();
+        float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
+        float y = boneMatrix.readFloat(0x30 * bone + 0x1C);
+        float z = boneMatrix.readFloat(0x30 * bone + 0x2C);
+        return new Vec3f(x, y, z);
+    }
+
+    public Pointer getBoneMatrix() {
+        return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
     }
 
     public void writeColor(int color) {

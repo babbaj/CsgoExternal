@@ -14,6 +14,9 @@ import com.me.memory.Memory;
 import com.me.memory.Offset;
 import com.me.memory.OffsetManager;
 import com.me.memory.Pointer;
+import com.me.mods.AntiFlashMod;
+import com.me.mods.AntiFlashMod;
+import com.me.mods.GlowMod;
 import com.me.mods.util.BaseMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
@@ -21,6 +24,10 @@ import com.me.overlay.ExternalOverlay;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import javax.swing.*;
+
+import static com.me.memory.OffsetManager.getOffset;
+import static com.me.memory.OffsetManager.getOffsetVal;
+import static com.me.memory.OffsetManager.getStructOffset;
 
 public class Main {
 
@@ -32,6 +39,9 @@ public class Main {
         System.out.println("Init Cheat");
         setupKeyListener();
         setMemory(new Memory("csgo.exe"));
+        ConfigManager cfg = ConfigManager.getInstance();
+        cfg.getAllOffsets();
+        cfg.getAllStructOffsets();
         setupMods();
 
         setOverlay(new ExternalOverlay() {
@@ -41,42 +51,22 @@ public class Main {
 
             }
         });
-        //long yawAddress = memory.getEngine().address() + 0x47F1B8;
-        //float yaw = memory.getProc().readFloat(yawAddress);
-        //memory.getProc().writeFloat(yawAddress, yaw + 90f);
 
 
-        ConfigManager cfg = ConfigManager.getInstance();
-        cfg.getAllOffsets();
-        cfg.getAllStructOffsets();
-        System.out.println(OffsetManager.getOffsetVal("m_dwLocalPlayer")); // correct
-        System.out.println(OffsetManager.getOffsetVal("m_dwEntityList")); // correct
-        System.out.println(OffsetManager.getOffsetVal("m_dwClientState")); // correct?
-        System.out.println(OffsetManager.getOffsetVal("dwClientState_ViewAngles")); // correct
-        System.out.println(OffsetManager.getOffsetVal("m_dwGlowObject")); // correct
 
+        while (true) {
+            ModManager.getInstance().forEach(BaseMod::tick);
+        }
 
-        //System.out.println(new Offset("meme",100, memory.getClient()).readUnsignedInt(0x4));
-        //for (int i = 0; i < 128; i += 4)
-        //System.out.println("players: " + OffsetManager.getOffset("m_dwGlowObject").readUnsignedInt(i));
-        //System.exit(1);
-        //while(true) {
-            ModManager.getInstance().tickAllMods();
-        //}
-        Entity meme = EntityManager.getInstance().getEntity(0);
-        System.out.println("test " + meme.getPointer().getAddress());
-        long health = meme.getPointer().readUnsignedInt(252);
-        System.out.println("health: " + health);
-
-        long address = OffsetManager.getOffset("m_dwEntityList").readUnsignedInt(0);
-        System.out.println("meme: " + address);
     }
 
 
-    public static void setupMods() {
+    private static void setupMods() {
         ModManager modManager = ModManager.getInstance();
 
-        modManager.registerMod(new EntityManagerService());
+        //modManager.registerMod(new EntityManagerService());
+        modManager.registerMod(new GlowMod());
+        modManager.registerMod(new AntiFlashMod());
         //modManager.registerMod(new ESPMod());
         //modManager.registerMod(new FlipMod());
     }
