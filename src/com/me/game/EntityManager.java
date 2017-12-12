@@ -34,7 +34,7 @@ public class EntityManager {
         if (localPlayer != null) {
             for (int i = 0; i < 64; i++) {
                 long entityBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
-                if (entityBase == 0) break;
+                if (entityBase == 0) continue;
                 Entity entity = new Entity(new Pointer(entityBase));
                 if (!entity.isValidEntity()) continue;
 

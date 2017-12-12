@@ -37,7 +37,7 @@ public class EntityManagerService extends BaseMod {
         int count = 0;
         for (int i = 0; i < 64; i++) {
             long entBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
-            if (entBase == 0) break;
+            if (entBase == 0) continue;
             count++;
         }
         return count;
