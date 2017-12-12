@@ -15,7 +15,8 @@
     "m_vecPunch": 0,
     "m_flFlashMaxAlpha": 41716,
     "m_dwForceAttack": 48996012,
-    "m_dwForceJump": 82898276
+    "m_dwForceJump": 82898276,
+    "m_iCrosshairId": 45732
   },
 
   "signatures": {

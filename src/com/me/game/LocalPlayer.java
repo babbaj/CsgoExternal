@@ -2,7 +2,6 @@ package com.me.game;
 
 import com.me.memory.Pointer;
 import com.me.utils.Vec2f;
-import com.me.utils.Vec3f;
 
 import java.awt.*;
 
@@ -31,6 +30,10 @@ public class LocalPlayer extends Entity {
 
     public float getFlashAlpha() {
         return getPointer().readFloat(getStructOffset("m_flFlashMaxAlpha"));
+    }
+
+    public int getCrosshairId() {
+        return getPointer().readInt(getStructOffset("m_iCrosshairId"));
     }
 
     public void writePunch(float x, float y) {

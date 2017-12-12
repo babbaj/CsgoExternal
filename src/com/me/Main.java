@@ -14,9 +14,8 @@ import com.me.memory.Memory;
 import com.me.memory.Offset;
 import com.me.memory.OffsetManager;
 import com.me.memory.Pointer;
+import com.me.mods.*;
 import com.me.mods.AntiFlashMod;
-import com.me.mods.AntiFlashMod;
-import com.me.mods.GlowMod;
 import com.me.mods.util.BaseMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
@@ -33,6 +32,7 @@ public class Main {
 
     private static Memory memory;
     private static JFrame overlay;
+    private static Robot robot;
 
 
     public static void main(String[] args) {
@@ -53,7 +53,6 @@ public class Main {
         });
 
 
-
         while (true) {
             ModManager.getInstance().forEach(BaseMod::tick);
         }
@@ -67,6 +66,7 @@ public class Main {
         modManager.registerMod(new EntityManagerService());
         modManager.registerMod(new GlowMod());
         modManager.registerMod(new AntiFlashMod());
+        modManager.registerMod(new TriggerbotMod());
         //modManager.registerMod(new ESPMod());
         //modManager.registerMod(new FlipMod());
     }
@@ -100,5 +100,12 @@ public class Main {
     }
     public static JFrame getOverlay() {
         return overlay;
+    }
+    public static Robot getRobot() {
+        try {
+            return robot == null ? robot = new Robot() : robot;
+        } catch (AWTException e) {
+            return null;
+        }
     }
 }

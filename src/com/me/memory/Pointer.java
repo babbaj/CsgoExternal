@@ -64,7 +64,7 @@ public class Pointer {
     public String readString(int off) {
         StringBuilder out = new StringBuilder();
         char c;
-        while ((c = (char)Main.getMemory().getProc().readShort(address + off)) != 0) {
+        while ((c = (char)this.readShort(off)) != 0) {
             out.append(c);
             off += 2;
         }

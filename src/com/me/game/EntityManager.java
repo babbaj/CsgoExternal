@@ -1,9 +1,7 @@
 package com.me.game;
 
-import com.me.Main;
-import com.me.memory.Offset;
-import com.me.memory.OffsetManager;
 import com.me.memory.Pointer;
+import com.sun.istack.internal.Nullable;
 
 import static com.me.memory.OffsetManager.*;
 
@@ -91,6 +89,7 @@ public class EntityManager {
     }
 
     // get our local player entity
+    @Nullable
     public LocalPlayer getLocalPlayer() {
         return (LocalPlayer)entityList.stream()
                         .filter(ent -> ent instanceof LocalPlayer)

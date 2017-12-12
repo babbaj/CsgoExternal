@@ -1,9 +1,6 @@
 package com.me.game;
 
-import com.me.memory.Offset;
 import com.me.memory.Pointer;
-import com.me.memory.OffsetManager;
-import com.me.utils.Vec2f;
 import com.me.utils.Vec3f;
 
 import static com.me.memory.OffsetManager.*;
@@ -48,7 +45,7 @@ public class Entity {
     }
 
     public boolean getDormant() {
-        return pointer.readInt(getStructOffset("m_bDormant")) != 0;
+        return pointer.readBoolean(getStructOffset("m_bDormant"));
     }
 
     public int getFlags() {
@@ -133,7 +130,7 @@ public class Entity {
     }
 
     public void writeGlow(float r, float g, float b, float a) {
-        Pointer glowObj = new Pointer(getOffset("m_dwGlowObject").readUnsignedInt(0));
+        Pointer glowObj = getOffset("m_dwGlowObject").getAsPointer(0);
         int glowIndex = getGlowIndex();
         glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
         glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
