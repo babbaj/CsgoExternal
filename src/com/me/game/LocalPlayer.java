@@ -1,5 +1,6 @@
 package com.me.game;
 
+import com.me.Main;
 import com.me.memory.Pointer;
 import com.me.utils.Vec2f;
 
@@ -50,12 +51,12 @@ public class LocalPlayer extends Entity {
     }
 
     public void writeJump(int mode) {
-        getPointer().writeInt(mode, getStructOffset("m_dwForceJump"));
+        Main.getMemory().getClient().writeInt(getStructOffset("m_dwForceJump"), mode);
     }
 
     // pitch, yaw?
     public void writeViewAngles(Vec2f vec) {
-        Pointer clientState = new Pointer(getOffset("m_dwClientState").readUnsignedInt(0));
+        Pointer clientState = getOffset("m_dwClientState").getPointer(0);
         clientState.writeFloat(vec.y, getStructOffset("m_dwViewAngles"));
         clientState.writeFloat(vec.x, getStructOffset("m_dwViewAngles") + 0x4);
     }
@@ -65,7 +66,8 @@ public class LocalPlayer extends Entity {
         angles.writeFloat(roll, 0x8);
     }
 
-    public void pressMouse(Robot bot, int button) {
+    public void pressMouse(int button) {
+        Robot bot = Main.getRobot();
         bot.mousePress(button);
         try {
             Thread.sleep(20);

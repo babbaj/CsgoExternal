@@ -3,11 +3,11 @@ package com.me.game;
 import com.me.memory.Pointer;
 import com.sun.istack.internal.Nullable;
 
-import static com.me.memory.OffsetManager.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static com.me.memory.OffsetManager.*;
 
 /**
  * Created by Babbaj on 12/1/2017.
@@ -33,6 +33,7 @@ public class EntityManager {
             for (int i = 0; i < 64; i++) {
                 long entityBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
                 if (entityBase == 0) continue;
+
                 Entity entity = new Entity(new Pointer(entityBase));
                 if (!entity.isValidEntity()) continue;
 
@@ -48,16 +49,11 @@ public class EntityManager {
             }
         }
 
-        removeBadEntities();
     }
 
     // clear the entity list
     public void clearEntities() {
         entityList.clear();
-    }
-
-    private void removeBadEntities() {
-        entityList.removeIf(ent -> !ent.isValidEntity());
     }
 
     public boolean containsEntity(Pointer p) {
@@ -74,14 +70,16 @@ public class EntityManager {
                          .anyMatch(ent -> ent.equals(entity));
     }
 
-    // get the number of players in the world
-    // TODO: fix this
-    private int getPlayerCount() {
-        return (int)getOffset("m_dwGlowObject").readUnsignedInt(0x4);
-    }
 
     public Entity getEntity(int index) {
         return entityList.get(index);
+    }
+
+    public Entity getEntityFromBase(long base) {
+        return entityList.stream()
+                         .filter(ent -> ent.getPointer().getAddress() == base)
+                         .findFirst()
+                         .orElse(null);
     }
 
     public List<Entity> getEntityList() {
@@ -105,7 +103,13 @@ public class EntityManager {
     public void forEach(Consumer<Entity> consumer) {
         entityList.stream()
                   .filter(ent -> !(ent instanceof LocalPlayer))
+                  .filter(Entity::isValidEntity)
                   .forEach(consumer);
+    }
+
+    public Entity entityFromId(int id) {
+        long entBase = getOffset("m_dwEntityList").readUnsignedInt((id-1) * 16);
+        return getEntityFromBase(entBase);
     }
 
 

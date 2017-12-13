@@ -70,7 +70,7 @@ public class Offset {
         return module.readDouble(offset + off);
     }
 
-    public Pointer getAsPointer(int off) {
+    public Pointer getPointer(int off) {
         return new Pointer(module.readUnsignedInt(offset + off));
     }
 

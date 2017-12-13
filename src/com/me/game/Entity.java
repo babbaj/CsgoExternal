@@ -1,5 +1,6 @@
 package com.me.game;
 
+import com.me.Main;
 import com.me.memory.Pointer;
 import com.me.utils.Vec3f;
 
@@ -32,7 +33,7 @@ public class Entity {
     }
 
     public boolean isValidEntity() {
-        return !getPointer().isNull() /*&& (getTeam() == TEAM_T || getTeam() == TEAM_CT) && health() > 0 && !getDormant()*/;
+        return !getPointer().isNull() /*&& (getTeam() == TEAM_T || getTeam() == TEAM_CT) && getHealth() > 0 /*&& !getDormant()*/;
     }
 
 
@@ -101,19 +102,19 @@ public class Entity {
     }
 
     public Vec3f getBonePos(int bone) {
-        Pointer boneMatrix = getBoneMatrix();
-        float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
-        float y = boneMatrix.readFloat(0x30 * bone + 0x1C);
-        float z = boneMatrix.readFloat(0x30 * bone + 0x2C);
+        int boneMatrix = getBoneMatrix();
+        float x = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x0C);
+        float y = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x1C);
+        float z = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x2C);
         return new Vec3f(x, y, z);
     }
 
-    public Pointer getBoneMatrix() {
-        return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
+    public int getBoneMatrix() {
+        return getStructOffset("m_dwBoneMatrix");
     }
 
     public String getName() {
-        Pointer radarBase = getOffset("dwRadarBase").getAsPointer(0);
+        Pointer radarBase = getOffset("dwRadarBase").getPointer(0);
         long radar = radarBase.readUnsignedInt(0x54);
         int id = EntityManager.getInstance().getEntityList().indexOf(this);
         Pointer namePointer = new Pointer(radar + ((0x1E0 * (id + 1 )) + 0x24));
@@ -130,7 +131,7 @@ public class Entity {
     }
 
     public void writeGlow(float r, float g, float b, float a) {
-        Pointer glowObj = getOffset("m_dwGlowObject").getAsPointer(0);
+        Pointer glowObj = getOffset("m_dwGlowObject").getPointer(0);
         int glowIndex = getGlowIndex();
         glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
         glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
