@@ -3,6 +3,7 @@ package com.me.game;
 import com.me.Main;
 import com.me.memory.Pointer;
 import com.me.utils.Vec2f;
+import com.me.utils.Vec3f;
 
 import java.awt.*;
 
@@ -64,6 +65,10 @@ public class LocalPlayer extends Entity {
     public void writeRoll(float roll) {
         Pointer angles = new Pointer(getOffset("m_dwClientState").readUnsignedInt(0));
         angles.writeFloat(roll, 0x8);
+    }
+
+    public void aimAt(Vec3f vec) {
+
     }
 
     public void pressMouse(int button) {

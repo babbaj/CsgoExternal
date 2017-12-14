@@ -48,12 +48,9 @@ public class Main {
             @Override
             public void draw(Graphics g) {
                 ModManager.getInstance().forEach(mod -> mod.draw2d(g));
-
             }
         });
 
-
-        System.out.println(Integer.toHexString(getOffset("dwViewMatrix").getOffset()));
         while (true) {
             ModManager.getInstance().forEach(BaseMod::tick);
         }
@@ -67,7 +64,7 @@ public class Main {
         modManager.registerMod(new EntityManagerService());
         modManager.registerMod(new GlowMod());
         modManager.registerMod(new AntiFlashMod());
-        //modManager.registerMod(new TriggerbotMod());
+        modManager.registerMod(new TriggerbotMod());
         modManager.registerMod(new AimbotMod());
         modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());

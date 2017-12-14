@@ -7,11 +7,13 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Toolkit;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
 
-public class ExternalOverlay extends JFrame {
+public class ExternalOverlay extends JFrame implements ActionListener {
+
+    public Timer timer;
 
     public ExternalOverlay() {
         this.setUndecorated(true);
@@ -23,6 +25,8 @@ public class ExternalOverlay extends JFrame {
         this.getContentPane().setLayout(new java.awt.FlowLayout());
         this.setVisible(true);
         this.setAutoRequestFocus(false);
+        this.timer = new Timer(1000/60, this);
+        timer.start();
     }
 
     private float[] getRes() {
@@ -32,7 +36,8 @@ public class ExternalOverlay extends JFrame {
         return new float[] {(float) width, (float) height};
     }
 
-    public void loop() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
         this.repaint();
     }
 

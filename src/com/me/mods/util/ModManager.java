@@ -29,7 +29,7 @@ public class ModManager {
         forEach(BaseMod::tick);
     }
 
-    public void forEach(Consumer<BaseMod> consumer) {
+    public synchronized void forEach(Consumer<BaseMod> consumer) {
         mods.values().forEach(consumer);
     }
 }
