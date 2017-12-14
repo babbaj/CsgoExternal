@@ -1,6 +1,5 @@
 package com.me.game;
 
-import com.me.Main;
 import com.me.memory.Pointer;
 import com.me.utils.Vec3f;
 
