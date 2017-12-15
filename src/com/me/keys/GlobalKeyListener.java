@@ -12,17 +12,17 @@ public class GlobalKeyListener implements NativeKeyListener {
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-        ModManager.getInstance().forEach(mod -> mod.keyPressed(e));
+        ModManager.getInstance().forEachUnsynchronized(mod -> mod.keyPressed(e));
     }
 
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        ModManager.getInstance().forEach(mod -> mod.keyReleased(e));
+        ModManager.getInstance().forEachUnsynchronized(mod -> mod.keyReleased(e));
     }
 
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
-        ModManager.getInstance().forEach(mod -> mod.keyPressed(e));
+        ModManager.getInstance().forEachUnsynchronized(mod -> mod.keyPressed(e));
     }
 
 }

@@ -9,13 +9,13 @@ public class GlobalMouseListener implements NativeMouseInputListener {
 
     @Override
     public void nativeMouseClicked(NativeMouseEvent nativeEvent) {
-        ModManager.getInstance().forEach(mod -> mod.mouseClicked(nativeEvent));
+        ModManager.getInstance().forEachUnsynchronized(mod -> mod.mouseClicked(nativeEvent));
 
     }
 
     @Override
     public void nativeMousePressed(NativeMouseEvent nativeEvent) {
-        ModManager.getInstance().forEach(mod -> mod.mousePressed(nativeEvent));
+        ModManager.getInstance().forEachUnsynchronized(mod -> mod.mousePressed(nativeEvent));
     }
 
     @Override

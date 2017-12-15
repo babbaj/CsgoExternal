@@ -51,8 +51,13 @@ public class Main {
             }
         });
 
-        while (true) {
-            ModManager.getInstance().forEach(BaseMod::tick);
+        try {
+            while (true) {
+                ModManager.getInstance().forEach(BaseMod::tick);
+            }
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(1);
         }
 
     }

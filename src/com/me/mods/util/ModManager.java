@@ -32,4 +32,9 @@ public class ModManager {
     public synchronized void forEach(Consumer<BaseMod> consumer) {
         mods.values().forEach(consumer);
     }
+
+    // unsafe for read and write
+    public void forEachUnsynchronized(Consumer<BaseMod> consumer) {
+        mods.values().forEach(consumer);
+    }
 }
