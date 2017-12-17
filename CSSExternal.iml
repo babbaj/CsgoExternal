@@ -10,5 +10,21 @@
     <orderEntry type="library" name="gson-2.8.0" level="project" />
     <orderEntry type="library" name="libs" level="project" />
     <orderEntry type="library" name="lwjgl-assimp-javadoc" level="project" />
+    <orderEntry type="library" name="gdx-backend-lwjgl-1.9.8" level="project" />
+    <orderEntry type="library" name="gdx-platform-1.9.8-natives-desktop" level="project" />
+    <orderEntry type="library" name="gdx-box2d-platform-1.9.8-natives-desktop" level="project" />
+    <orderEntry type="library" name="gdx-1.9.8" level="project" />
+    <orderEntry type="library" name="jlayer-1.0.1-gdx" level="project" />
+    <orderEntry type="library" name="lwjgl-2.9.2" level="project" />
+    <orderEntry type="library" name="lwjgl_util-2.9.2" level="project" />
+    <orderEntry type="library" name="jinput-2.0.5" level="project" />
+    <orderEntry type="library" name="jinput-platform-2.0.5-natives-windows" level="project" />
+    <orderEntry type="library" name="jutils-1.0.0" level="project" />
+    <orderEntry type="library" name="jorbis-0.0.17" level="project" />
+    <orderEntry type="library" name="2.9" level="project" />
+    <orderEntry type="library" name="lwjgl-platform-2.9.2-natives-windows" level="project" />
+    <orderEntry type="library" name="lwjgl-platform-2.9.2-natives-linux" level="project" />
+    <orderEntry type="library" name="lwjgl-platform-2.9.2-natives-osx" level="project" />
+    <orderEntry type="library" name="gdx-box2d-1.9.8" level="project" />
   </component>
 </module>

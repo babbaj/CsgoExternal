@@ -1,6 +1,7 @@
 package com.me.mods;
 
 import com.me.Main;
+import com.me.event.OverlayEvent;
 import com.me.game.*;
 import com.me.mods.util.BaseMod;
 import com.me.mods.util.ModManager;
@@ -8,7 +9,6 @@ import com.me.utils.Utils;
 import com.me.utils.Vec2f;
 import com.me.utils.Vec3f;
 
-import java.awt.*;
 
 /**
  * Created by Babbaj on 12/1/2017.
@@ -25,16 +25,7 @@ public class ESPMod extends BaseMod {
     }
 
     @Override
-    public void draw2d(Graphics g) {
-        float[][] viewMatrix = ViewMatrix.getInstance().getViewMatrix();
-        Entity ent = closestToCrosshair();
-        if (ent == null) return;
-        Vec3f head = ent.getBonePos(Bones.HEAD.id());
-        Vec2f screen = Utils.toScreen(head, viewMatrix);
-        try {
-            g.fillRect((int) screen.x, (int) screen.y, 10, 10);
-        } catch (NullPointerException e) {
-        }
+    public void render(OverlayEvent event) {
 
 
     }

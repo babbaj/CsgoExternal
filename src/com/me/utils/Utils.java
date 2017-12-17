@@ -2,6 +2,8 @@ package com.me.utils;
 
 import com.me.Main;
 
+import java.awt.*;
+
 /**
  * Created by Babbaj on 12/15/2017.
  */
@@ -20,8 +22,9 @@ public class Utils {
         x *= invw;
         y *= invw;
 
-        double width = Main.getOverlay().getWidth();
-        double height = Main.getOverlay().getHeight();
+        Rectangle window = Main.getOverlay().getWindow().getBounds();
+        double width = window.getWidth();
+        double height = window.getHeight();
 
         double x2 = width / 2.0;
         double y2 = height / 2.0;

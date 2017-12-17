@@ -22,6 +22,7 @@ public class TriggerbotMod extends BaseMod {
     public void tick() {
         if (System.currentTimeMillis() - lastTimeChecked > delay) {
             LocalPlayer player = EntityManager.getInstance().getLocalPlayer();
+            if (player == null) return;
             int crosshairId = player.getCrosshairId();
             if (crosshairId > 0 && crosshairId < 64) {
                 Entity target = EntityManager.getInstance().entityFromId(crosshairId);

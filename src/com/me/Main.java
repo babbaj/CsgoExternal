@@ -1,6 +1,7 @@
 package com.me;
 
-import java.awt.*;
+import java.awt.Robot;
+import java.awt.AWTException;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -13,14 +14,16 @@ import com.me.mods.*;
 import com.me.mods.AntiFlashMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
+import com.me.overlay.*;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
+
 import javax.swing.*;
 
 public class Main {
 
     private static Memory memory;
-    private static JFrame overlay;
+    private static Overlay overlay;
     private static Robot robot;
 
 
@@ -32,6 +35,9 @@ public class Main {
         cfg.getAllOffsets();
         cfg.getAllStructOffsets();
         setupMods();
+        setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
+        //setOverlay(new Overlay(Window.get("Snipping Tool")));
+        overlay.display();
 
 
         try {
@@ -82,10 +88,10 @@ public class Main {
     public static Memory getMemory() {
         return memory;
     }
-    public static void setOverlay(JFrame overlayIn) {
+    public static void setOverlay(Overlay overlayIn) {
         overlay = overlayIn;
     }
-    public static JFrame getOverlay() {
+    public static Overlay getOverlay() {
         return overlay;
     }
     public static Robot getRobot() {

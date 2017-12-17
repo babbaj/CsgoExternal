@@ -1,5 +1,6 @@
 package com.me.mods.util;
 
+import com.me.event.OverlayEvent;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.mouse.NativeMouseEvent;
 
@@ -21,6 +22,8 @@ public class BaseMod {
         onLoad();
     }
 
+    // TODO: Events
+
     public void onLoad() {
 
     }
@@ -28,7 +31,7 @@ public class BaseMod {
     public void tick() {
     }
 
-    public void draw2d(Graphics g) {
+    public void render(OverlayEvent event) {
     }
 
     public void keyPressed(NativeKeyEvent e) {
