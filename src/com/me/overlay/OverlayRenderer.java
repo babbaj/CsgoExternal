@@ -53,11 +53,11 @@ public final class OverlayRenderer extends ApplicationAdapter {
             gl.glEnable(GL_BLEND);
             gl.glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            //JEX.EVENT_BUS.post(event.setBatch(batch).setRenderer(renderer).setTextRenderer(textRenderer));
             ModManager.getInstance().forEach(mod -> mod.render(event.setBatch(batch).setRenderer(renderer).setTextRenderer(textRenderer)));
 
             gl.glDisable(GL_BLEND);
         }
+
     }
 
     @Override

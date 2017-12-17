@@ -87,6 +87,11 @@ public class SigScanner {
         return true;
     }
 
+    public static void cleanMemory() {
+        // let the gc clean this up
+        moduleScannerMap.values().forEach(scanner -> scanner.region = null);
+    }
+
 
     //0x22 meme method
     /*public static int getAddressForPattern(Module module, int pattern_offset, int address_offset, int flags, byte... values) {

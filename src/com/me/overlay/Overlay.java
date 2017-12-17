@@ -45,8 +45,8 @@ public final class Overlay {
         config.fullscreen = false;
         config.vSyncEnabled = false;
 
-        config.foregroundFPS = 60;
-        config.backgroundFPS = 60;
+        config.foregroundFPS = 144;
+        config.backgroundFPS = 144;
 
         application = new LwjglApplication(renderer = new OverlayRenderer(this), config);
 

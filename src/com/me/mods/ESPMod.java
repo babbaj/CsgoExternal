@@ -1,13 +1,20 @@
 package com.me.mods;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.me.Main;
 import com.me.event.OverlayEvent;
 import com.me.game.*;
 import com.me.mods.util.BaseMod;
 import com.me.mods.util.ModManager;
+import com.me.utils.RenderUtils;
 import com.me.utils.Utils;
 import com.me.utils.Vec2f;
 import com.me.utils.Vec3f;
+
+import static com.badlogic.gdx.Gdx.gl;
+import static com.badlogic.gdx.graphics.GL20.*;
 
 
 /**
@@ -19,14 +26,45 @@ public class ESPMod extends BaseMod {
         super("ESPMod", "see through walls and shit");
     }
 
-    @Override
-    public void tick() {
+    private Texture waifuTex;
+    private Sprite waifu;
 
-    }
 
     @Override
     public void render(OverlayEvent event) {
+        if (waifuTex == null) {
+            waifuTex = new Texture(Main.waifuFile.getPath());
+            waifu = new Sprite(waifuTex);
+            waifu.flip(false ,true);
+        }
 
+        EntityManager.getInstance().forEach(entity -> drawWaifu(entity, event));
+
+
+    }
+
+    public void drawWaifu(Entity entity, OverlayEvent event) {
+        float[][] viewMatrix = ViewMatrix.getInstance().getViewMatrix();
+        Vec3f bottom = entity.getPos(); // base position
+        Vec3f offset = entity.getViewOffsets(); // height
+        Vec3f top = bottom.copy().add(offset);
+
+        Vec2f topPos = Utils.toScreen(top, viewMatrix);
+        Vec2f bottompos = Utils.toScreen(bottom, viewMatrix);
+
+        float height = Math.abs(topPos.y - bottompos.y);
+        float width = height *1f;
+
+        // stretch
+        topPos.y -= height *.2f;
+        height += height *.3f;
+
+        RenderUtils.drawTexture(event, waifu, topPos.x - width/1.8f, topPos.y, width, height);
+        try {
+            Thread.sleep(1);
+        } catch (Exception e) {
+
+        }
 
     }
 

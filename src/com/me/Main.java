@@ -2,6 +2,7 @@ package com.me;
 
 import java.awt.Robot;
 import java.awt.AWTException;
+import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -15,6 +16,7 @@ import com.me.mods.AntiFlashMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
 import com.me.overlay.*;
+import com.me.scanner.SigScanner;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
@@ -26,6 +28,8 @@ public class Main {
     private static Overlay overlay;
     private static Robot robot;
 
+    public static File waifuFile = new File("src/com/me/assets/waifu.png");
+
 
     public static void main(String[] args) {
         System.out.println("Init Cheat");
@@ -34,6 +38,7 @@ public class Main {
         ConfigManager cfg = ConfigManager.getInstance();
         cfg.getAllOffsets();
         cfg.getAllStructOffsets();
+        SigScanner.cleanMemory();
         setupMods();
         setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
         overlay.display();
@@ -59,7 +64,7 @@ public class Main {
         modManager.registerMod(new AntiFlashMod());
         modManager.registerMod(new TriggerbotMod());
         modManager.registerMod(new AimbotMod());
-        //modManager.registerMod(new ESPMod());
+        modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());
     }
 

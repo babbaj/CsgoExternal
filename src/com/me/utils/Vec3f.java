@@ -35,6 +35,10 @@ public class Vec3f {
         return this;
     }
 
+    public Vec3f copy() {
+        return new Vec3f(this.x, this.y, this.z);
+    }
+
     @Override
     public String toString() {
         return String.format("X: %.2f, Y: %.2f, Z:%.2f", this.z, this.y, this.z);
