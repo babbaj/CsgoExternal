@@ -87,7 +87,6 @@ public final class OverlayRenderer extends ApplicationAdapter {
         renderer.setProjectionMatrix(camera.combined);
         renderer.setAutoShapeType(true);
 
-        // FIXME
         if (textRenderer == null)
             textRenderer = new CustomBitmapFont(Gdx.files.classpath("font.fnt"), Gdx.files.classpath("font.png"), true);
     }
