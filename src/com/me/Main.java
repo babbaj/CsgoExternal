@@ -36,7 +36,6 @@ public class Main {
         cfg.getAllStructOffsets();
         setupMods();
         setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
-        //setOverlay(new Overlay(Window.get("Snipping Tool")));
         overlay.display();
 
 
