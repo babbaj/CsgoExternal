@@ -1,6 +1,5 @@
 package com.me.mods;
 
-import com.me.Main;
 import com.me.game.Entity;
 import com.me.game.EntityManager;
 import com.me.game.LocalPlayer;

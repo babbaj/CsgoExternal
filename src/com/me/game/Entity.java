@@ -32,7 +32,7 @@ public class Entity {
     }
 
     public boolean isValidEntity() {
-        return !getPointer().isNull() /*&& (getTeam() == TEAM_T || getTeam() == TEAM_CT) && getHealth() > 0 /*&& !getDormant()*/;
+        return !getPointer().isNull() && (getTeam() == TEAM_T || getTeam() == TEAM_CT) && getHealth() > 0 /*&& !getDormant()*/;
     }
 
 
@@ -67,6 +67,15 @@ public class Entity {
         return new Vec3f(x, y, z);
     }
 
+    public Vec3f getBonePos(int bone) {
+        Pointer boneMatrix = getBoneMatrix();
+        float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
+        float z = boneMatrix.readFloat(0x30 * bone + 0x1C);
+        float y = boneMatrix.readFloat(0x30 * bone + 0x2C);
+        return new Vec3f(x, y, z);
+    }
+
+
     public Vec3f getVelocity() {
         float x = pointer.readFloat(getStructOffset("m_vecVelocity"));
         float z = pointer.readFloat(getStructOffset("m_vecVelocity") + 0x4);
@@ -87,29 +96,21 @@ public class Entity {
     }
 
     public Vec3f getViewAngles() {
-        float pitch = getPitch();
         float yaw = getYaw();
+        float pitch = getPitch();
         float roll = getRoll();
-        return new Vec3f(pitch, yaw, roll);
+        return new Vec3f(yaw, pitch, roll);
     }
 
     public Vec3f getViewOffsets() {
         float x = pointer.readFloat(getStructOffset("m_vecViewOffset"));
-        float y = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x4);
-        float z = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x8);
+        float z = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x4);
+        float y = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x8);
         return new Vec3f(x, y, z);
     }
 
-    public Vec3f getBonePos(int bone) {
-        int boneMatrix = getBoneMatrix();
-        float x = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x0C);
-        float y = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x1C);
-        float z = getPointer().readFloat(boneMatrix + 0x30 * bone + 0x2C);
-        return new Vec3f(x, y, z);
-    }
-
-    public int getBoneMatrix() {
-        return getStructOffset("m_dwBoneMatrix");
+    public Pointer getBoneMatrix() {
+        return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
     }
 
     public String getName() {

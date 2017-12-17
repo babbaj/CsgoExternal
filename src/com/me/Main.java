@@ -6,27 +6,16 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import com.me.config.ConfigManager;
-import com.me.game.Entity;
-import com.me.game.EntityManager;
 import com.me.keys.GlobalKeyListener;
 import com.me.keys.GlobalMouseListener;
 import com.me.memory.Memory;
-import com.me.memory.Offset;
-import com.me.memory.OffsetManager;
-import com.me.memory.Pointer;
 import com.me.mods.*;
 import com.me.mods.AntiFlashMod;
-import com.me.mods.util.BaseMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
-import com.me.overlay.ExternalOverlay;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import javax.swing.*;
-
-import static com.me.memory.OffsetManager.getOffset;
-import static com.me.memory.OffsetManager.getOffsetVal;
-import static com.me.memory.OffsetManager.getStructOffset;
 
 public class Main {
 
@@ -44,16 +33,10 @@ public class Main {
         cfg.getAllStructOffsets();
         setupMods();
 
-        setOverlay(new ExternalOverlay() {
-            @Override
-            public void draw(Graphics g) {
-                ModManager.getInstance().forEach(mod -> mod.draw2d(g));
-            }
-        });
 
         try {
             while (true) {
-                ModManager.getInstance().forEach(BaseMod::tick);
+                ModManager.getInstance().tickAllMods();
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -71,9 +54,8 @@ public class Main {
         modManager.registerMod(new AntiFlashMod());
         modManager.registerMod(new TriggerbotMod());
         modManager.registerMod(new AimbotMod());
-        modManager.registerMod(new ESPMod());
+        //modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());
-        //modManager.registerMod(new FlipMod());
     }
 
     public static void setupKeyListener() {

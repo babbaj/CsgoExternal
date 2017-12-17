@@ -1,8 +1,10 @@
 package com.me.mods.util;
 
+import com.me.Main;
 import com.me.game.EntityManager;
 
 import static com.me.memory.OffsetManager.getOffset;
+import static com.me.memory.OffsetManager.getStructOffset;
 
 /**
  * Created by Babbaj on 12/6/2017.
@@ -38,6 +40,7 @@ public class EntityManagerService extends BaseMod {
         for (int i = 0; i < 64; i++) {
             long entBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
             if (entBase == 0) continue;
+            if (Main.getMemory().getProc().readInt(entBase + getStructOffset("m_iHealth")) <= 0) continue;
             count++;
         }
         return count;

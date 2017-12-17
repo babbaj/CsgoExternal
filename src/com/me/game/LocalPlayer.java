@@ -55,20 +55,16 @@ public class LocalPlayer extends Entity {
         Main.getMemory().getClient().writeInt(getStructOffset("m_dwForceJump"), mode);
     }
 
-    // pitch, yaw?
     public void writeViewAngles(Vec2f vec) {
-        Pointer clientState = getOffset("m_dwClientState").getPointer(0);
-        clientState.writeFloat(vec.y, getStructOffset("m_dwViewAngles"));
-        clientState.writeFloat(vec.x, getStructOffset("m_dwViewAngles") + 0x4);
+        //Pointer clientState = getOffset("m_dwClientState").getPointer(0);
+        Pointer clientState = new Pointer(Main.getMemory().getEngine().readUnsignedInt(0x57D84C));
+        clientState.writeFloat(vec.x, 0x4D10);
+        clientState.writeFloat(vec.y, 0x4D10 + 0x4);
     }
 
     public void writeRoll(float roll) {
         Pointer angles = new Pointer(getOffset("m_dwClientState").readUnsignedInt(0));
         angles.writeFloat(roll, 0x8);
-    }
-
-    public void aimAt(Vec3f vec) {
-
     }
 
     public void pressMouse(int button) {

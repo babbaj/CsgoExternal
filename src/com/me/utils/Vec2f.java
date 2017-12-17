@@ -12,4 +12,8 @@ public class Vec2f {
         this.x = x;
         this.y = y;
     }
+
+    public boolean isValid() {
+        return !Double.isNaN(this.x) &&  !Double.isNaN(this.y);
+    }
 }
