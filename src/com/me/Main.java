@@ -43,11 +43,10 @@ public class Main {
         setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
         overlay.display();
 
-
         try {
             while (true) {
-                ModManager.getInstance().tickAllMods();
                 ViewMatrix.getInstance().updateMatrix();
+                ModManager.getInstance().tickAllMods();
             }
         } catch (Throwable t) {
             t.printStackTrace();

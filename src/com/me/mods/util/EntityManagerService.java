@@ -1,6 +1,7 @@
 package com.me.mods.util;
 
 import com.me.Main;
+import com.me.game.Entity;
 import com.me.game.EntityManager;
 
 import static com.me.memory.OffsetManager.getOffset;
@@ -21,10 +22,10 @@ public class EntityManagerService extends BaseMod {
     public void tick() {
         EntityManager manager = EntityManager.getInstance();
 
-        int playerCount = getPlayerCount();
-        if (playerCount != manager.getEntityList().size()) {
-            manager.clearEntities();
-        }
+        //int playerCount = getPlayerCount();
+        //if (playerCount != manager.getEntityList().size()) {
+        //    manager.clearEntities();
+        //}
         manager.updateEntityList();
     }
 
@@ -32,8 +33,7 @@ public class EntityManagerService extends BaseMod {
         int count = 0;
         for (int i = 0; i < 64; i++) {
             long entBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
-            if (entBase == 0) continue;
-            //if (Main.getMemory().getProc().readInt(entBase + getStructOffset("m_iHealth")) <= 0) continue;
+            if (!EntityManager.isEntityValid(entBase)) continue;
             count++;
         }
         return count;

@@ -64,12 +64,17 @@ public class Entity {
         this.team = readTeam();
         this.flags = readFlags();
         this.glowIndex = readGlowIndex();
-        this.headPos = readBonePos(Bones.HEAD.id());
         this.pos = readPos();
         this.viewAngles = readViewAngles();
         this.viewOffsets = readViewOffsets();
         this.velocity = readVelocity();
         this.dormant = readDormant();
+        try {
+            this.headPos = readBonePos(Bones.HEAD.id());
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            System.out.println(this.isValidEntity());
+        }
     }
 
 
@@ -154,7 +159,7 @@ public class Entity {
         Pointer radarBase = getOffset("dwRadarBase").getPointer(0);
         long radar = radarBase.readUnsignedInt(0x54);
         int id = EntityManager.getInstance().getEntityList().indexOf(this);
-        Pointer namePointer = new Pointer(radar + ((0x1E0 * (id + 1 )) + 0x24));
+        Pointer namePointer = new Pointer(radar + ((0x1E0 * (id)) + 0x24));
         String name = namePointer.readString(0);
         return name;
     }
@@ -208,7 +213,7 @@ public class Entity {
         return this.velocity;
     }
     public Vec3f getViewOffsets() {
-        return this.viewOffsets;
+        return this.viewOffsets.y == 0.0D ? new Vec3f(0f, 64.06f, 0f) : this.viewOffsets;
     }
     public boolean getDormant() {
         return this.dormant;

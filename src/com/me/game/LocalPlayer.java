@@ -18,6 +18,11 @@ public class LocalPlayer extends Entity {
         super(pointer);
     }
 
+    @Override
+    public boolean isValidEntity() {
+        return true;
+    }
+
     public int getShotsFired() {
         return (int)getPointer().readUnsignedInt(getStructOffset("m_iShotsFired"));
     }

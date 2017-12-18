@@ -13,9 +13,7 @@ import java.awt.*;
  */
 public class Utils {
 
-    public static ScreenPos toScreen(Vec3f vec, float[][] viewMatrix) {
-        LocalPlayer player = EntityManager.getInstance().getLocalPlayer();
-
+    public static ScreenPos toScreen(Vec3f vec, float[][] viewMatrix, LocalPlayer player) {
         float x = viewMatrix[0][0] * vec.x + viewMatrix[0][1] * vec.z + viewMatrix[0][2] * vec.y + viewMatrix[0][3];
         float y = viewMatrix[1][0] * vec.x + viewMatrix[1][1] * vec.z + viewMatrix[1][2] * vec.y + viewMatrix[1][3];
 
@@ -29,8 +27,8 @@ public class Utils {
         y *= invw;
 
         Rectangle window = Main.getOverlay().getWindow().getBounds();
-        double width = window.getWidth();
-        double height = window.getHeight();
+        double width = window != null ? window.getWidth() : 1920;
+        double height = window != null ? window.getHeight() : 1080;
 
         double x2 = width / 2.0;
         double y2 = height / 2.0;
@@ -52,8 +50,7 @@ public class Utils {
         return new ScreenPos(pos, visible);
     }
 
-    public static Entity closestToCrosshair() {
-        LocalPlayer localPlayer = EntityManager.getInstance().getLocalPlayer();
+    public static Entity closestToCrosshair(LocalPlayer player) {
         float[][] matrix = ViewMatrix.getInstance().getViewMatrix();
         float centerX = 1366/2;
         float centerY = 768/2;
@@ -61,9 +58,9 @@ public class Utils {
         Entity out = null;
         float shortest = Float.MAX_VALUE;
         for (Entity ent : EntityManager.getInstance().getEntityList()) {
-            if (ent == localPlayer) continue;
+            if (ent == player) continue;
             if (!ent.isValidEntity()) continue;
-            ScreenPos pos = Utils.toScreen(ent.getHeadPos(), matrix);
+            ScreenPos pos = Utils.toScreen(ent.getHeadPos(), matrix, player);
             if (pos == null) return null;
             float dist = distanceBetweenAngles(center, pos.vec);
 

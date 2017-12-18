@@ -8,9 +8,7 @@ import com.me.game.*;
 import com.me.mods.util.BaseMod;
 import com.me.utils.RenderUtils;
 import com.me.utils.Utils;
-import com.me.utils.Vec2f;
 import com.me.utils.Vec3f;
-import org.lwjgl.opengl.GL11;
 
 
 /**
@@ -25,7 +23,6 @@ public class ESPMod extends BaseMod {
     private Texture waifuTex;
     private Sprite waifu;
 
-
     @Override
     public void render(OverlayEvent event) {
         if (waifuTex == null) {
@@ -34,30 +31,32 @@ public class ESPMod extends BaseMod {
             waifu.flip(false ,true);
         }
 
-        EntityManager.getInstance().forEachUnsynchronized(entity -> drawWaifu(entity, event));
+        LocalPlayer player = EntityManager.getInstance().getLocalPlayer();
+        if (player == null) return;
 
-
+        EntityManager.getInstance().forEachUnsynchronized(entity -> {
+            drawWaifu(entity, event, player);
+        });
     }
 
-    public void drawWaifu(Entity entity, OverlayEvent event) {
+    public void drawWaifu(Entity entity, OverlayEvent event, LocalPlayer player) {
         float[][] viewMatrix = ViewMatrix.getInstance().getViewMatrix();
         Vec3f bottom = entity.getPos(); // base position
         Vec3f offset = entity.getViewOffsets(); // height
         Vec3f top = bottom.add(offset);
 
-        Utils.ScreenPos topPos = Utils.toScreen(top, viewMatrix);
-        Utils.ScreenPos bottompos = Utils.toScreen(bottom, viewMatrix);
+        Utils.ScreenPos topPos = Utils.toScreen(top, viewMatrix, player);
+        Utils.ScreenPos bottompos = Utils.toScreen(bottom, viewMatrix, player);
         if (!topPos.isVisible || !bottompos.isVisible) return;
 
         float height = Math.abs(topPos.vec.y - bottompos.vec.y);
-        float width = height *1f;
+        float width = height ;
 
         // stretch
         topPos.vec.y -= height *.2f;
-        height += height *.3f;
+        height *= 1.3f;
 
-        RenderUtils.drawTexture(event, waifu, topPos.vec.x - width/1.8f, topPos.vec.y, width, height);
+        RenderUtils.drawTexture(event, waifu, topPos.vec.x - width/1.6f, topPos.vec.y, width, height);
     }
-
 
 }
