@@ -1,12 +1,14 @@
 package com.me.mods;
 
 import com.me.Main;
+import com.me.event.OverlayEvent;
 import com.me.game.*;
 import com.me.mods.util.BaseMod;
-import com.me.mods.util.ModManager;
 import com.me.utils.*;
-import com.sun.glass.events.ViewEvent;
 import org.jnativehook.keyboard.NativeKeyEvent;
+
+import java.awt.*;
+
 
 
 /**
@@ -22,6 +24,8 @@ public class AimbotMod extends BaseMod {
     private long delay = 5; // 5 ms
     private boolean state;
     private final int targetBone = Bones.HEAD.id();
+    private final float FOV = 90;
+
 
     @Override
     public void keyPressed(NativeKeyEvent e) {
@@ -42,54 +46,30 @@ public class AimbotMod extends BaseMod {
             LocalPlayer player = EntityManager.getInstance().getLocalPlayer();
             if (player == null) return;
             if (state) {
-                Entity target = closestToCrosshair();
+                Entity target = Utils.closestToCrosshair();
                 if (target == null) return;
                 Vec2f angles = new Vec2f(0, 0);
                 Vec3f myPos = player.getPos().add(player.getViewOffsets());
+                System.out.println(myPos);
 
-                Vec3f targetPos = target.getBonePos(targetBone);
-
+                Vec3f targetPos = target.getHeadPos();
                 calcAngles(myPos, targetPos, angles);
-                if (angles.isValid())
+                Vec3f playerAngles = player.getViewAngles();
+                //Vec2f oldAngles = new Vec2f(pl)
+                if (angles.isValid() /*&& distanceBetweenAngles(angles, player.getViewAngles()) > FOV*/)
                     player.writeViewAngles(angles);
+
                 //this.state = false;
             }
             lastTimeChecked = System.currentTimeMillis();
         }
     }
 
-    //TODO: this is shit and need to check visibility
-    private Entity closestToCrosshair() {
-        LocalPlayer localPlayer = EntityManager.getInstance().getLocalPlayer();
-        float[][] matrix = ViewMatrix.getInstance().getViewMatrix();
-        float centerX = 1366/2;
-        float centerY = 768/2;
-        Vec2f center = new Vec2f(centerX, centerY);
-        Entity out = null;
-        float shortest = Float.MAX_VALUE;
-        for (Entity ent : EntityManager.getInstance().getEntityList()) {
-            if (ent == localPlayer) continue;
-            Vec2f vec = Utils.toScreen(ent.getBonePos(Bones.HEAD.id()), matrix);
-            if (vec == null) return null;
-            float dist = distanceBetweenAngles(center, vec);
 
-            if (dist < shortest) {
-                out = ent;
-                shortest = dist;
-            }
-        }
-        return out;
-    }
 
 
     public float getDistanceBetweenAngles(final float ang1, final float ang2) {
         return Math.abs(((ang1 - ang2 + 180) % 360 + 360) % 360 - 180);
-    }
-
-    public float distanceBetweenAngles(Vec2f a, Vec2f b) {
-        float diffX = b.x - a.x;
-        float diffY = b.y - a.y;
-        return (float)Math.sqrt(diffX*diffX + diffY*diffY);
     }
 
 

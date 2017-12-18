@@ -1,10 +1,14 @@
 package com.me.game;
 
+import com.google.common.collect.ForwardingSet;
 import com.me.memory.Pointer;
 import com.sun.istack.internal.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
 import static com.me.memory.OffsetManager.*;
@@ -16,7 +20,7 @@ public class EntityManager {
 
     private static EntityManager INSTANCE = new EntityManager();
 
-    private List<Entity> entityList = new ArrayList<>();
+    private List<Entity> entityList = new CopyOnWriteArrayList<>();
 
     private EntityManager() {
     }
@@ -36,18 +40,26 @@ public class EntityManager {
 
                 Entity entity = new Entity(new Pointer(entityBase));
                 if (!entity.isValidEntity()) continue;
+                //if (entity.getPointer().isNull()) continue;
 
                 if (entity.equals(localPlayer) && !containsEntity(localPlayer)) {
+                    localPlayer.updateEntity();
                     this.entityList.add(localPlayer);
                     System.out.printf("Added LocalPlayer %s, Size: %d\n", Long.toHexString(localPlayer.getPointer().getAddress()), this.entityList.size());
 
                 } else if(!entity.getPointer().isNull() && !containsEntity(entityBase)) {
+                    try {
+                        entity.updateEntity();
+                    } catch (NullPointerException e) {
+                        continue; // kind of shit tbh
+                    }
                     this.entityList.add(entity);
                     System.out.printf("Added entity %s, Size: %d\n", Long.toHexString(entity.getPointer().getAddress()), this.entityList.size());
                 }
-
             }
         }
+        entityList.forEach(Entity::updateEntity);
+        //entityList.removeIf(ent -> ent.readHealth() <= 0 /*|| ent.readDormant()*/);
 
     }
 
@@ -105,6 +117,15 @@ public class EntityManager {
                   .filter(ent -> !(ent instanceof LocalPlayer))
                   .filter(Entity::isValidEntity)
                   .forEach(consumer);
+    }
+
+    public void forEachUnsynchronized(Consumer<Entity> consumer) {
+        Collections.unmodifiableList(entityList)
+                .stream()
+                .filter(ent -> !(ent instanceof LocalPlayer))
+                .filter(Entity::isValidEntity)
+                .forEach(consumer);
+
     }
 
     public Entity entityFromId(int id) {

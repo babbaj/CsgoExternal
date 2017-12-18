@@ -9,30 +9,18 @@ import static com.me.memory.OffsetManager.*;
 /**
  * Created by Babbaj on 12/1/2017.
  */
-public class Entity {
+@Deprecated
+public class EntityOld {
 
     public static final int TEAM_SPEC = 1;
     public static final int TEAM_T = 2;
     public static final int TEAM_CT = 3;
 
-    private String name;
-    private int health = 100;
-    private int team = -1;
-    private int flags;
-    private int glowIndex;
-    //private Vec3f[] bones;
-    private Vec3f headPos;
-    private Vec3f pos;
-    private Vec3f viewAngles;
-    private Vec3f viewOffsets;
-    private Vec3f velocity;
-    private boolean dormant; // not sure if this works
-
-
     private Pointer pointer;
 
 
-    public Entity(Pointer pointerIn) {
+
+    public EntityOld(Pointer pointerIn) {
         this.pointer = pointerIn;
     }
 
@@ -40,72 +28,49 @@ public class Entity {
         return this.pointer;
     }
 
-    @Override
-    public boolean equals(Object other) {
+    public boolean equals(EntityOld other) {
         if (other == this) return true;
-        if (!(other instanceof Entity)) return false;
-        return ((Entity)other).getPointer().getAddress() == this.pointer.getAddress();
-    }
-
-    @Override
-    public int hashCode() {
-        return Long.hashCode(this.pointer.getAddress());
+        return other.getPointer().getAddress() == this.pointer.getAddress();
     }
 
     public boolean isValidEntity() {
-        int team = getTeam();
-        if (team == -1) team = readTeam(); // if this entity hasn't yet been updated the team number will be -1
-        return !getPointer().isNull() && getHealth() > 0 && (team == TEAM_T || team == TEAM_CT) && !getDormant();
-    }
-
-    public void updateEntity() {
-        this.name = readName();
-        this.health = readHealth();
-        this.team = readTeam();
-        this.flags = readFlags();
-        this.glowIndex = readGlowIndex();
-        this.headPos = readBonePos(Bones.HEAD.id());
-        this.pos = readPos();
-        this.viewAngles = readViewAngles();
-        this.viewOffsets = readViewOffsets();
-        this.velocity = readVelocity();
-        this.dormant = readDormant();
+        return !getPointer().isNull() && (getTeam() == TEAM_T || getTeam() == TEAM_CT) && getHealth() > 0 /*&& !getDormant()*/;
     }
 
 
-    public int readHealth() {
+    public int getHealth() {
         return pointer.readInt(getStructOffset("m_iHealth"));
     }
 
-    public int readTeam() {
+    public int getTeam() {
         return pointer.readInt(getStructOffset("m_iTeamNum"));
     }
 
-    public boolean readDormant() {
+    public boolean getDormant() {
         return pointer.readBoolean(getStructOffset("m_bDormant"));
     }
 
-    public int readFlags() {
+    public int getFlags() {
         return (int)pointer.readUnsignedInt(getStructOffset("m_fFlags"));
     }
 
-    public int readColor() {
+    public int getColor() {
         return (int)pointer.readUnsignedInt(getStructOffset("m_clrRender"));
     }
 
-    public int readGlowIndex() {
+    public int getGlowIndex() {
         return pointer.readInt(getStructOffset("m_iGlowIndex"));
     }
 
-    public Vec3f readPos() {
+    public Vec3f getPos() {
         float x = pointer.readFloat(getStructOffset("m_vecOrigin"));
         float z = pointer.readFloat(getStructOffset("m_vecOrigin") + 0x4);
         float y = pointer.readFloat(getStructOffset("m_vecOrigin") + 0x8);
         return new Vec3f(x, y, z);
     }
 
-    public Vec3f readBonePos(int bone) {
-        Pointer boneMatrix = readBoneMatrix();
+    public Vec3f getBonePos(int bone) {
+        Pointer boneMatrix = getBoneMatrix();
         float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
         float z = boneMatrix.readFloat(0x30 * bone + 0x1C);
         float y = boneMatrix.readFloat(0x30 * bone + 0x2C);
@@ -113,44 +78,44 @@ public class Entity {
     }
 
 
-    public Vec3f readVelocity() {
+    public Vec3f getVelocity() {
         float x = pointer.readFloat(getStructOffset("m_vecVelocity"));
         float z = pointer.readFloat(getStructOffset("m_vecVelocity") + 0x4);
         float y = pointer.readFloat(getStructOffset("m_vecVelocity") + 0x8);
         return new Vec3f(x, y, z);
     }
 
-    public float readPitch() {
+    public float getPitch() {
         return pointer.readFloat(getStructOffset("m_dwViewAngles"));
     }
 
-    public float readYaw() {
+    public float getYaw() {
         return pointer.readFloat(getStructOffset("m_dwViewAngles") + 0x4);
     }
 
-    public float readRoll() {
+    public float getRoll() {
         return pointer.readFloat(getStructOffset("m_dwViewAngles") + 0x8);
     }
 
-    public Vec3f readViewAngles() {
-        float yaw = readYaw();
-        float pitch = readPitch();
-        float roll = readRoll();
+    public Vec3f getViewAngles() {
+        float yaw = getYaw();
+        float pitch = getPitch();
+        float roll = getRoll();
         return new Vec3f(yaw, pitch, roll);
     }
 
-    public Vec3f readViewOffsets() {
+    public Vec3f getViewOffsets() {
         float x = pointer.readFloat(getStructOffset("m_vecViewOffset"));
         float z = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x4);
         float y = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x8);
         return new Vec3f(x, y, z);
     }
 
-    public Pointer readBoneMatrix() {
+    public Pointer getBoneMatrix() {
         return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
     }
 
-    public String readName() {
+    public String getName() {
         Pointer radarBase = getOffset("dwRadarBase").getPointer(0);
         long radar = radarBase.readUnsignedInt(0x54);
         int id = EntityManager.getInstance().getEntityList().indexOf(this);
@@ -169,7 +134,7 @@ public class Entity {
 
     public void writeGlow(float r, float g, float b, float a) {
         Pointer glowObj = getOffset("m_dwGlowObject").getPointer(0);
-        int glowIndex = readGlowIndex();
+        int glowIndex = getGlowIndex();
         glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
         glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
         glowObj.writeFloat(b, (glowIndex * 0x38) + 0xC);
@@ -177,41 +142,6 @@ public class Entity {
 
         glowObj.writeBoolean(true, (glowIndex * 0x38) + 0x24);
         glowObj.writeBoolean(false, (glowIndex * 0x38) + 0x25);
-    }
-
-
-    public String getName() {
-        return this.name;
-    }
-    public int getHealth() {
-        return this.health;
-    }
-    public int getTeam() {
-        return this.team;
-    }
-    public int getFlags() {
-        return this.flags;
-    }
-    public int getGlowIndex() {
-        return this.glowIndex;
-    }
-    public Vec3f getHeadPos() {
-        return this.headPos;
-    }
-    public Vec3f getPos() {
-        return this.pos;
-    }
-    public Vec3f getViewAngles() {
-        return this.viewAngles;
-    }
-    public Vec3f getVelocity() {
-        return this.velocity;
-    }
-    public Vec3f getViewOffsets() {
-        return this.viewOffsets;
-    }
-    public boolean getDormant() {
-        return this.dormant;
     }
 
 

@@ -24,8 +24,11 @@ public class ViewMatrix {
     }
 
     public float[][] getViewMatrix() {
-        readMatrix();
         return this.matrix;
+    }
+
+    public void updateMatrix() {
+        readMatrix();
     }
 
     private void readMatrix() {

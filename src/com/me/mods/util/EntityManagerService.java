@@ -20,19 +20,12 @@ public class EntityManagerService extends BaseMod {
     @Override
     public void tick() {
         EntityManager manager = EntityManager.getInstance();
+
         int playerCount = getPlayerCount();
         if (playerCount != manager.getEntityList().size()) {
             manager.clearEntities();
-            if (playerCount > 0)
-                manager.updateEntityList();
-            return;
         }
-
-        // clear the entity list if we are not in the game
-        if (manager.getLocalPlayer() == null && manager.getEntityList().size() > 0) {
-            manager.clearEntities();
-        }
-
+        manager.updateEntityList();
     }
 
     private int getPlayerCount() {
@@ -40,7 +33,7 @@ public class EntityManagerService extends BaseMod {
         for (int i = 0; i < 64; i++) {
             long entBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
             if (entBase == 0) continue;
-            if (Main.getMemory().getProc().readInt(entBase + getStructOffset("m_iHealth")) <= 0) continue;
+            //if (Main.getMemory().getProc().readInt(entBase + getStructOffset("m_iHealth")) <= 0) continue;
             count++;
         }
         return count;

@@ -8,6 +8,7 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 import com.me.config.ConfigManager;
+import com.me.game.ViewMatrix;
 import com.me.keys.GlobalKeyListener;
 import com.me.keys.GlobalMouseListener;
 import com.me.memory.Memory;
@@ -20,7 +21,6 @@ import com.me.scanner.SigScanner;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import javax.swing.*;
 
 public class Main {
 
@@ -47,9 +47,11 @@ public class Main {
         try {
             while (true) {
                 ModManager.getInstance().tickAllMods();
+                ViewMatrix.getInstance().updateMatrix();
             }
         } catch (Throwable t) {
             t.printStackTrace();
+            overlay.close();
             System.exit(1);
         }
 

@@ -121,6 +121,7 @@ public class Pointer {
     }
 
     public boolean isNull() {
-        return !Main.getMemory().getProc().canRead(address, 8);
+        //return !Main.getMemory().getProc().canRead(address, 8);
+        return address == 0;
     }
 }

@@ -3,12 +3,10 @@ package com.me.game;
 import com.me.Main;
 import com.me.memory.Pointer;
 import com.me.utils.Vec2f;
-import com.me.utils.Vec3f;
 
 import java.awt.*;
 
 import static com.me.memory.OffsetManager.getOffset;
-import static com.me.memory.OffsetManager.getOffsetVal;
 import static com.me.memory.OffsetManager.getStructOffset;
 
 /**
@@ -55,6 +53,7 @@ public class LocalPlayer extends Entity {
         Main.getMemory().getClient().writeInt(getStructOffset("m_dwForceJump"), mode);
     }
 
+    // TODO: fix this
     public void writeViewAngles(Vec2f vec) {
         //Pointer clientState = getOffset("m_dwClientState").getPointer(0);
         Pointer clientState = new Pointer(Main.getMemory().getEngine().readUnsignedInt(0x57D84C));
