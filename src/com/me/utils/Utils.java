@@ -44,7 +44,7 @@ public class Utils {
         Vec3f playerAngles = player.getViewAngles();
         Vec2f angles = new Vec2f(playerAngles.y, playerAngles.x);
         calcAngles(myPos, vec, diffAngle);
-        float distanceFromCrosshair = Math.abs(distanceBetweenAngles(diffAngle, angles));
+        float distanceFromCrosshair = Math.abs(MathHelper.normalizeAngle(distanceBetweenAngles(diffAngle, angles)));
         if (distanceFromCrosshair > 90f) visible = false;
 
 
@@ -78,7 +78,7 @@ public class Utils {
     public static float distanceBetweenAngles(Vec2f a, Vec2f b) {
         float diffX = b.x - a.x;
         float diffY = b.y - a.y;
-        return (float)MathHelper.normalizeAngle(Math.sqrt(diffX*diffX + diffY*diffY));
+        return (float)Math.sqrt(diffX*diffX + diffY*diffY);
     }
 
     // aimbot angles

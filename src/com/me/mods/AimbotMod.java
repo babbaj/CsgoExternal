@@ -24,7 +24,7 @@ public class AimbotMod extends BaseMod {
     private long delay = 5; // 5 ms
     private boolean state;
     private final int targetBone = Bones.HEAD.id();
-    private final float FOV = 90;
+    private final float FOV = 80;
 
 
     @Override
@@ -50,16 +50,22 @@ public class AimbotMod extends BaseMod {
                 if (target == null) return;
                 Vec2f angles = new Vec2f(0, 0);
                 Vec3f myPos = player.getPos().add(player.getViewOffsets());
-                System.out.println(myPos);
-
                 Vec3f targetPos = target.getHeadPos();
                 calcAngles(myPos, targetPos, angles);
+
+                // FIXME: broken as shit
+                Vec2f diffAngle = new Vec2f(0, 0);
                 Vec3f playerAngles = player.getViewAngles();
-                //Vec2f oldAngles = new Vec2f(pl)
-                if (angles.isValid() /*&& distanceBetweenAngles(angles, player.getViewAngles()) > FOV*/)
+                Vec2f myAngles = new Vec2f(playerAngles.y, playerAngles.x);
+                calcAngles(myPos, targetPos, diffAngle);
+                float distanceFromCrosshair = MathHelper.normalizeAngle(Math.abs(Utils.distanceBetweenAngles(diffAngle, myAngles)));
+                System.out.println(distanceFromCrosshair);
+
+                //System.out.println(distanceFromCrosshair);
+                if (angles.isValid() /*&& distanceFromCrosshair < FOV*/)
                     player.writeViewAngles(angles);
 
-                //this.state = false;
+                this.state = false;
             }
             lastTimeChecked = System.currentTimeMillis();
         }

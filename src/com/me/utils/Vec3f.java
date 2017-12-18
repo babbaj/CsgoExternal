@@ -28,11 +28,7 @@ public class Vec3f {
     }
 
     public Vec3f add(Vec3f other) {
-        this.x += other.x;
-        this.y += other.y;
-        this.z += other.z;
-
-        return this;
+        return new Vec3f(this.x + other.x, this.y + other.y, this.z + other.z);
     }
 
     public Vec3f copy() {
@@ -41,6 +37,6 @@ public class Vec3f {
 
     @Override
     public String toString() {
-        return String.format("X: %.2f, Y: %.2f, Z:%.2f", this.z, this.y, this.z);
+        return String.format("X: %.2f, Y: %.2f, Z:%.2f", this.x, this.y, this.z);
     }
 }

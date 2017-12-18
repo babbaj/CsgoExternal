@@ -16,4 +16,9 @@ public class Vec2f {
     public boolean isValid() {
         return !Double.isNaN(this.x) &&  !Double.isNaN(this.y);
     }
+
+    @Override
+    public String toString() {
+        return String.format("x: %.2f, y: %.2f", this.x, this.y);
+    }
 }
