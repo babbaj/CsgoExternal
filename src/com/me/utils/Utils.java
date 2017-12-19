@@ -6,8 +6,6 @@ import com.me.game.EntityManager;
 import com.me.game.LocalPlayer;
 import com.me.game.ViewMatrix;
 
-import java.awt.*;
-
 /**
  * Created by Babbaj on 12/15/2017.
  */
@@ -26,9 +24,8 @@ public class Utils {
         x *= invw;
         y *= invw;
 
-        Rectangle window = Main.getOverlay().getWindow().getBounds();
-        double width = window != null ? window.getWidth() : 1920;
-        double height = window != null ? window.getHeight() : 1080;
+        double width = Main.getRes()[0];
+        double height = Main.getRes()[1];
 
         double x2 = width / 2.0;
         double y2 = height / 2.0;
@@ -42,7 +39,7 @@ public class Utils {
         Vec3f playerAngles = player.getViewAngles();
         Vec2f angles = new Vec2f(playerAngles.y, playerAngles.x);
         calcAngles(myPos, vec, diffAngle);
-        float distanceFromCrosshair = Math.abs(MathHelper.normalizeAngle(distanceBetweenAngles(diffAngle, angles)));
+        float distanceFromCrosshair = Math.abs(MathHelper.normalizeAngle(MathHelper.distanceBetweenPoints(diffAngle, angles)));
         if (distanceFromCrosshair > 90f) visible = false;
 
 
@@ -50,10 +47,11 @@ public class Utils {
         return new ScreenPos(pos, visible);
     }
 
+    // TODO: refactor this
     public static Entity closestToCrosshair(LocalPlayer player) {
         float[][] matrix = ViewMatrix.getInstance().getViewMatrix();
-        float centerX = 1366/2;
-        float centerY = 768/2;
+        float centerX = Main.getRes()[0]/2;
+        float centerY = Main.getRes()[1]/2;
         Vec2f center = new Vec2f(centerX, centerY);
         Entity out = null;
         float shortest = Float.MAX_VALUE;
@@ -61,8 +59,8 @@ public class Utils {
             if (ent == player) continue;
             if (!ent.isValidEntity()) continue;
             ScreenPos pos = Utils.toScreen(ent.getHeadPos(), matrix, player);
-            if (pos == null) return null;
-            float dist = distanceBetweenAngles(center, pos.vec);
+            if (pos == null || !pos.isVisible) continue;
+            float dist = MathHelper.distanceBetweenPoints(center, pos.vec);
 
             if (dist < shortest) {
                 out = ent;
@@ -72,11 +70,6 @@ public class Utils {
         return out;
     }
 
-    public static float distanceBetweenAngles(Vec2f a, Vec2f b) {
-        float diffX = b.x - a.x;
-        float diffY = b.y - a.y;
-        return (float)Math.sqrt(diffX*diffX + diffY*diffY);
-    }
 
     // aimbot angles
     public static void calcAngles(Vec3f src, Vec3f dst, Vec2f angles) {

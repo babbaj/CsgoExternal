@@ -22,4 +22,18 @@ public class MathHelper {
         while (angle > 180) angle -= 360;
         return angle;
     }
+
+    public static float vecToAngle(Vec2f vec) {
+        return (float)Math.toDegrees(Math.atan2(vec.y, vec.x));
+    }
+
+    public static float distanceBetweenPoints(Vec2f a, Vec2f b) {
+        float diffX = b.x - a.x;
+        float diffY = b.y - a.y;
+        return (float)Math.sqrt(diffX*diffX + diffY*diffY);
+    }
+
+    public static float differenceBetweenAngles(final float ang1, final float ang2) {
+        return Math.abs(((ang1 - ang2 + 180) % 360 + 360) % 360 - 180);
+    }
 }

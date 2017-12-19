@@ -26,7 +26,7 @@ public class Entity {
     private Vec3f viewAngles;
     private Vec3f viewOffsets;
     private Vec3f velocity;
-    private boolean dormant; // not sure if this works
+    private boolean dormant;
 
 
     private Pointer pointer;
@@ -59,22 +59,17 @@ public class Entity {
     }
 
     public void updateEntity() {
+        this.headPos = readBonePos(Bones.HEAD.id()); // this should be done first?
         this.name = readName();
         this.health = readHealth();
         this.team = readTeam();
-        this.flags = readFlags();
+        this.flags = readFlags(); // https://github.com/ValveSoftware/source-sdk-2013/blob/master/mp/src/public/const.h#L147
         this.glowIndex = readGlowIndex();
         this.pos = readPos();
         this.viewAngles = readViewAngles();
         this.viewOffsets = readViewOffsets();
         this.velocity = readVelocity();
         this.dormant = readDormant();
-        try {
-            this.headPos = readBonePos(Bones.HEAD.id());
-        } catch (NullPointerException e){
-            e.printStackTrace();
-            System.out.println(this.isValidEntity());
-        }
     }
 
 
@@ -111,6 +106,10 @@ public class Entity {
 
     public Vec3f readBonePos(int bone) {
         Pointer boneMatrix = readBoneMatrix();
+        if (boneMatrix.isNull()) {
+            System.err.println("null bone matrix");
+            return new Vec3f(0, 0, 0); // i shouldnt have to do this
+        }
         float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
         float z = boneMatrix.readFloat(0x30 * bone + 0x1C);
         float y = boneMatrix.readFloat(0x30 * bone + 0x2C);
@@ -148,6 +147,7 @@ public class Entity {
         float x = pointer.readFloat(getStructOffset("m_vecViewOffset"));
         float z = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x4);
         float y = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x8);
+        if (y == 0) y = this.isCrouching() ? 32f : 64.06f; // TODO: get correct crouch offset
         return new Vec3f(x, y, z);
     }
 
@@ -213,10 +213,18 @@ public class Entity {
         return this.velocity;
     }
     public Vec3f getViewOffsets() {
-        return this.viewOffsets.y == 0.0D ? new Vec3f(0f, 64.06f, 0f) : this.viewOffsets;
+        return this.viewOffsets;
     }
     public boolean getDormant() {
         return this.dormant;
+    }
+
+
+    public boolean isCrouching() {
+        return (this.getFlags() & (1 << 1)) == (1 << 1);
+    }
+    public boolean isOnGround() {
+        return (this.getFlags() & 1) == 1;
     }
 
 

@@ -1,7 +1,6 @@
 package com.me;
 
-import java.awt.Robot;
-import java.awt.AWTException;
+import java.awt.*;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -17,6 +16,7 @@ import com.me.mods.AntiFlashMod;
 import com.me.mods.util.EntityManagerService;
 import com.me.mods.util.ModManager;
 import com.me.overlay.*;
+import com.me.overlay.Window;
 import com.me.scanner.SigScanner;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
@@ -27,6 +27,7 @@ public class Main {
     private static Memory memory;
     private static Overlay overlay;
     private static Robot robot;
+    private static float[] res;
 
     public static File waifuFile = new File("src/com/me/assets/waifu.png");
 
@@ -65,7 +66,7 @@ public class Main {
         modManager.registerMod(new AntiFlashMod());
         modManager.registerMod(new TriggerbotMod());
         modManager.registerMod(new AimbotMod());
-        modManager.registerMod(new ESPMod());
+        //modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());
     }
 
@@ -105,5 +106,13 @@ public class Main {
         } catch (AWTException e) {
             return null;
         }
+    }
+
+    public static float[] getRes() {
+        if (res == null) {
+            Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+            res = new float[] {dim.width, dim.height};
+        }
+        return res;
     }
 }
