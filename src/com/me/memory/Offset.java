@@ -74,4 +74,48 @@ public class Offset {
         return new Pointer(module.readUnsignedInt(offset + off));
     }
 
+    //
+    // Write to memory
+    //
+    public void writeBoolean(boolean val, int off) {
+        nullCheck();
+        module.writeBoolean(offset + off, val);
+    }
+
+    public void writeByte(byte val, int off) {
+        nullCheck();
+        module.writeByte(offset + off, val);
+    }
+
+    public void writeInt(int val, int off) {
+        nullCheck();
+        module.writeInt(offset + off, val);
+    }
+
+    public void writeShort(short val, int off) {
+        nullCheck();
+        module.writeShort(offset + off, val);
+    }
+
+    public void writeLong(long val, int off) {
+        nullCheck();
+        module.writeLong(offset + off, val);
+    }
+
+    public void writeFloat(float val, int off) {
+        nullCheck();
+        module.writeFloat(offset + off, val);
+    }
+
+    public void writeDouble(double val, int off) {
+        nullCheck();
+        module.writeDouble(offset + off, val);
+    }
+
+
+    private void nullCheck() {
+        if (isNull()) throw new NullPointerException("null pointer: " + offset);
+    }
+
+
 }

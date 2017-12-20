@@ -7,6 +7,7 @@ import com.me.utils.Vec2f;
 import java.awt.*;
 
 import static com.me.memory.OffsetManager.getOffset;
+import static com.me.memory.OffsetManager.getOffsetVal;
 import static com.me.memory.OffsetManager.getStructOffset;
 
 /**
@@ -55,15 +56,14 @@ public class LocalPlayer extends Entity {
     }
 
     public void writeJump(int mode) {
-        Main.getMemory().getClient().writeInt(getStructOffset("m_dwForceJump"), mode);
+        getOffset("dwForceJump").writeInt(mode, 0);
     }
 
-    // TODO: fix this
     public void writeViewAngles(Vec2f vec) {
-        //Pointer clientState = getOffset("m_dwClientState").getPointer(0);
-        Pointer clientState = new Pointer(Main.getMemory().getEngine().readUnsignedInt(0x57D84C));
-        clientState.writeFloat(vec.x, 0x4D10);
-        clientState.writeFloat(vec.y, 0x4D10 + 0x4);
+        Pointer clientState = getOffset("dwClientState").getPointer(0);
+        int viewAngleOffset = getOffsetVal("dwClientState_ViewAngles");
+        clientState.writeFloat(vec.x, viewAngleOffset);
+        clientState.writeFloat(vec.y, viewAngleOffset + 0x4);
     }
 
     public void writeRoll(float roll) {

@@ -34,9 +34,9 @@ public class BhopMod extends BaseMod {
         if (this.state) {
             LocalPlayer player = EntityManager.getInstance().getLocalPlayer();
             if (player == null) return;
-            if ((player.getFlags() & 1) == 1)
+            if ((player.getFlags() & 1) == 1) {
                 player.writeJump(6);
-
+            }
         }
     }
 }
