@@ -67,8 +67,8 @@ public class LocalPlayer extends Entity {
     }
 
     public void writeRoll(float roll) {
-        Pointer angles = new Pointer(getOffset("m_dwClientState").readUnsignedInt(0));
-        angles.writeFloat(roll, 0x8);
+        Pointer angles = getOffset("dwClientState").getPointer(0);
+        angles.writeFloat(roll, getOffsetVal("dwClientState_ViewAngles") + 0x8);
     }
 
     public void pressMouse(int button) {

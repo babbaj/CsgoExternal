@@ -184,6 +184,14 @@ public class Entity {
         glowObj.writeBoolean(false, (glowIndex * 0x38) + 0x25);
     }
 
+    public void writeChams(int r, int g, int b, int a) {
+        int clrRender = getStructOffset("m_clrRender");
+        this.pointer.writeInt(r, clrRender);
+        this.pointer.writeInt(g , clrRender + 1);
+        this.pointer.writeInt(b , clrRender + 2);
+        this.pointer.writeInt(a , clrRender + 3);
+    }
+
 
     public String getName() {
         return this.name;

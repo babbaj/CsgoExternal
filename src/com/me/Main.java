@@ -39,7 +39,7 @@ public class Main {
         ConfigManager cfg = ConfigManager.getInstance();
         cfg.getAllOffsets();
         cfg.getAllStructOffsets();
-        SigScanner.cleanMemory();
+        SigScanner.freeMemory();
         setupMods();
         setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
         overlay.display();
@@ -68,6 +68,8 @@ public class Main {
         modManager.registerMod(new AimbotMod());
         //modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());
+        modManager.registerMod(new AntiRollMod());
+        //modManager.registerMod(new ChamsMod());
     }
 
     public static void setupKeyListener() {
@@ -104,6 +106,7 @@ public class Main {
         try {
             return robot == null ? robot = new Robot() : robot;
         } catch (AWTException e) {
+            e.printStackTrace();
             return null;
         }
     }

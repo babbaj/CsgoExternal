@@ -2,6 +2,9 @@ package com.me.memory;
 
 import com.me.Main;
 
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
 /**
  * Created by Babbaj on 12/1/2017.
  */

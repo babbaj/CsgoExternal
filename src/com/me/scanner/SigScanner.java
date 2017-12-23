@@ -87,9 +87,10 @@ public class SigScanner {
         return true;
     }
 
-    public static void cleanMemory() {
+    public static void freeMemory() {
         // let the gc clean this up
-        moduleScannerMap.values().forEach(scanner -> scanner.region = null);
+        //moduleScannerMap.values().forEach(scanner -> scanner.region = null);
+        moduleScannerMap.clear();
     }
 
 

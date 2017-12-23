@@ -16,10 +16,10 @@ public class BaseMod {
 
     private boolean enabled;
 
-    public BaseMod(String nameIn, String descriptionIn) {
-        this.name = nameIn;
-        this.description = descriptionIn;
-        onLoad();
+    public BaseMod(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.onLoad();
     }
 
     // TODO: Events

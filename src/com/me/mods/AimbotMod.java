@@ -82,12 +82,12 @@ public class AimbotMod extends BaseMod {
         angles.x = (float) Math.toDegrees(Math.asin(delta[2]/hyp)); // pitch
         angles.y = (float) Math.toDegrees(Math.atan(delta[1]/delta[0])); // yaw
 
-        angles.x = MathHelper.normalizeAngle(angles.x); // make sure they're valid
-        angles.y = MathHelper.normalizeAngle(angles.y);
         if(delta[0] >= 0.0)
         {
             angles.y += 180.0f;
         }
+        angles.x = MathHelper.normalizeAngle(angles.x); // make sure they're valid
+        angles.y = MathHelper.normalizeAngle(angles.y);
     }
 
 

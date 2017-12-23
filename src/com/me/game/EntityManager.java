@@ -39,7 +39,7 @@ public class EntityManager {
         if (localPlayer != null && !containsEntity(localPlayer))  {
             entityList.add(localPlayer);
             localPlayer.updateEntity();
-            System.out.printf("Added LocalPlayer %s, Size: %d\n", Long.toHexString(localPlayer.getPointer().getAddress()), this.entityList.size());
+            System.out.printf("Added LocalPlayer %s, Size: %d\n", Long.toHexString(localPlayer.getPointer().getAddress()).toUpperCase(), this.entityList.size());
         }
 
 
@@ -124,10 +124,10 @@ public class EntityManager {
 
     public void forEachUnsynchronized(Consumer<Entity> consumer) {
         Collections.unmodifiableList(entityList)
-                .stream()
-                .filter(ent -> !(ent instanceof LocalPlayer))
-                .filter(Entity::isValidEntity)
-                .forEach(consumer);
+                   .stream()
+                   .filter(ent -> !(ent instanceof LocalPlayer))
+                   .filter(Entity::isValidEntity)
+                   .forEach(consumer);
 
     }
 
