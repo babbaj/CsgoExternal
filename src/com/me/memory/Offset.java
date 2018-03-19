@@ -28,12 +28,13 @@ public class Offset {
     }
 
     public boolean isNull() {
-        return offset == 0;
+        return offset == 0 && !(this instanceof InvalidOffset);
     }
 
     public Module getModule() {
         return this.module;
     }
+
 
     //
     // Dereferencing methods

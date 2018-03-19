@@ -14,8 +14,8 @@ public class GlowMod extends BaseMod {
         super("GlowMod", "make players glow");
     }
 
-    public static final float[] COLOR_T = {1f, 0, 0};
-    public static final float[] COLOR_CT = {0, 0, 1f};
+    private static final float[] COLOR_T =  {1f, 0, 0};
+    private static final float[] COLOR_CT = {0, 0, 1f};
 
     @Override
     public void tick() {

@@ -3,6 +3,8 @@ package com.me.game;
 import com.me.memory.Pointer;
 import com.me.utils.Vec3f;
 
+import static com.me.memory.Offsets.*;
+import static com.me.memory.Offsets.Netvars.*;
 import static com.me.memory.OffsetManager.*;
 
 
@@ -74,33 +76,33 @@ public class Entity {
 
 
     public int readHealth() {
-        return pointer.readInt(getStructOffset("m_iHealth"));
+        return pointer.readInt(getNetVar(m_iHealth));
     }
 
     public int readTeam() {
-        return pointer.readInt(getStructOffset("m_iTeamNum"));
+        return pointer.readInt(getNetVar(m_iTeamNum));
     }
 
     public boolean readDormant() {
-        return pointer.readBoolean(getStructOffset("m_bDormant"));
+        return pointer.readBoolean(getNetVar(m_bDormant));
     }
 
     public int readFlags() {
-        return (int)pointer.readUnsignedInt(getStructOffset("m_fFlags"));
+        return (int)pointer.readUnsignedInt(getNetVar(m_fFlags));
     }
 
     public int readColor() {
-        return (int)pointer.readUnsignedInt(getStructOffset("m_clrRender"));
+        return (int)pointer.readUnsignedInt(getNetVar(m_clrRender));
     }
 
     public int readGlowIndex() {
-        return pointer.readInt(getStructOffset("m_iGlowIndex"));
+        return pointer.readInt(getNetVar(m_iGlowIndex));
     }
 
     public Vec3f readPos() {
-        float x = pointer.readFloat(getStructOffset("m_vecOrigin"));
-        float z = pointer.readFloat(getStructOffset("m_vecOrigin") + 0x4);
-        float y = pointer.readFloat(getStructOffset("m_vecOrigin") + 0x8);
+        float x = pointer.readFloat(getNetVar(m_vecOrigin));
+        float z = pointer.readFloat(getNetVar(m_vecOrigin) + 0x4);
+        float y = pointer.readFloat(getNetVar(m_vecOrigin) + 0x8);
         return new Vec3f(x, y, z);
     }
 
@@ -118,22 +120,22 @@ public class Entity {
 
 
     public Vec3f readVelocity() {
-        float x = pointer.readFloat(getStructOffset("m_vecVelocity"));
-        float z = pointer.readFloat(getStructOffset("m_vecVelocity") + 0x4);
-        float y = pointer.readFloat(getStructOffset("m_vecVelocity") + 0x8);
+        float x = pointer.readFloat(getNetVar(m_vecVelocity));
+        float z = pointer.readFloat(getNetVar(m_vecVelocity) + 0x4);
+        float y = pointer.readFloat(getNetVar(m_vecVelocity) + 0x8);
         return new Vec3f(x, y, z);
     }
 
     public float readPitch() {
-        return pointer.readFloat(getStructOffset("m_dwViewAngles"));
+        return pointer.readFloat(getNetVar(m_dwViewAngles));
     }
 
     public float readYaw() {
-        return pointer.readFloat(getStructOffset("m_dwViewAngles") + 0x4);
+        return pointer.readFloat(getNetVar(m_dwViewAngles) + 0x4);
     }
 
     public float readRoll() {
-        return pointer.readFloat(getStructOffset("m_dwViewAngles") + 0x8);
+        return pointer.readFloat(getNetVar(m_dwViewAngles) + 0x8);
     }
 
     public Vec3f readViewAngles() {
@@ -144,19 +146,19 @@ public class Entity {
     }
 
     public Vec3f readViewOffsets() {
-        float x = pointer.readFloat(getStructOffset("m_vecViewOffset"));
-        float z = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x4);
-        float y = pointer.readFloat(getStructOffset("m_vecViewOffset") + 0x8);
+        float x = pointer.readFloat(getNetVar(m_vecViewOffset));
+        float z = pointer.readFloat(getNetVar(m_vecViewOffset) + 0x4);
+        float y = pointer.readFloat(getNetVar(m_vecViewOffset) + 0x8);
         if (y == 0) y = this.isCrouching() ? 32f : 64.06f; // TODO: get correct crouch offset
         return new Vec3f(x, y, z);
     }
 
     public Pointer readBoneMatrix() {
-        return new Pointer(pointer.readUnsignedInt(getStructOffset("m_dwBoneMatrix")));
+        return new Pointer(pointer.readUnsignedInt(getNetVar(m_dwBoneMatrix)));
     }
 
     public String readName() {
-        Pointer radarBase = getOffset("dwRadarBase").getPointer(0);
+        Pointer radarBase = getOffset(dwRadarBase).getPointer(0);
         long radar = radarBase.readUnsignedInt(0x54);
         int id = EntityManager.getInstance().getEntityList().indexOf(this);
         Pointer namePointer = new Pointer(radar + ((0x1E0 * (id)) + 0x24));
@@ -165,15 +167,16 @@ public class Entity {
     }
 
     public void writeColor(int color) {
-        pointer.writeInt(color, getStructOffset("m_clrRender"));
+        pointer.writeInt(color, getNetVar(m_clrRender));
     }
 
+    @Deprecated // not implemented
     public void writeSpotted(boolean b) {
-        pointer.writeBoolean(b, getStructOffset("m_bSpotted"));
+        pointer.writeBoolean(b, getNetVar("m_bSpotted"));
     }
 
     public void writeGlow(float r, float g, float b, float a) {
-        Pointer glowObj = getOffset("m_dwGlowObject").getPointer(0);
+        Pointer glowObj = getOffset(m_dwGlowObjectManager).getPointer(0);
         int glowIndex = readGlowIndex();
         glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
         glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
@@ -185,7 +188,7 @@ public class Entity {
     }
 
     public void writeChams(int r, int g, int b, int a) {
-        int clrRender = getStructOffset("m_clrRender");
+        int clrRender = getNetVar(m_clrRender);
         this.pointer.writeInt(r, clrRender);
         this.pointer.writeInt(g , clrRender + 1);
         this.pointer.writeInt(b , clrRender + 2);

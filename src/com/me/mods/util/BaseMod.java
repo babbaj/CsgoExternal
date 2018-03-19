@@ -1,6 +1,7 @@
 package com.me.mods.util;
 
 import com.me.event.OverlayEvent;
+import com.me.memory.Offsets;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.mouse.NativeMouseEvent;
 
@@ -9,7 +10,8 @@ import java.awt.*;
 /**
  * Created by Babbaj on 12/1/2017.
  */
-public class BaseMod {
+// too lazy to import static
+public class BaseMod implements Offsets, Offsets.Netvars {
 
     private String name;
     private String description;

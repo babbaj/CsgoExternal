@@ -7,14 +7,17 @@ import java.util.*;
  */
 public class OffsetManager {
 
-    private static List<Offset> offsets = new ArrayList<>();
+    private static final Map<String, Offset> offsetMap = new HashMap<>();
 
-    private static Map<String, Integer> structOffsetMap = new HashMap<>();
+    private static final Map<String, Integer> netVarMap = new HashMap<>();
 
     public static void addOffset(Offset offset){
-        offsets.add(offset);
+        offsetMap.put(offset.getName(), offset);
     }
 
+    public static void addOffset(String name, Offset offset){
+        offsetMap.put(name, offset);
+    }
 
     /**
      *
@@ -34,19 +37,17 @@ public class OffsetManager {
      * @throws NullPointerException if no offset is found
      */
     public static Offset getOffset(String name) {
-        return offsets.stream()
-                      .filter(off -> off.getName().equals(name))
-                      .findFirst()
-                      .orElseThrow(() -> new NullPointerException("Unknwown offset: " + name));
-
+        return Objects.requireNonNull(offsetMap.get(name), "Unknown offset: " + name);
     }
 
-    public static int getStructOffset(String name) {
-        return Objects.requireNonNull(structOffsetMap.get(name), "Unknown offset: " + name);
+    public static int getNetVar(String name) {
+        Integer val = netVarMap.get(name);
+        if (val < 0) throw new IllegalStateException("Attempted to use invalid netvar " + name);
+        return Objects.requireNonNull(val, "Unknown netvar: " + name);
     }
 
-    public static void addStructOffset(String name, int value) {
-        structOffsetMap.put(name, value);
+    public static void addNetVar(String name, int value) {
+        netVarMap.put(name, value);
     }
 
 }

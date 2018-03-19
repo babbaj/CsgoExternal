@@ -29,7 +29,7 @@ public class Main {
     private static Robot robot;
     private static float[] res;
 
-    public static File waifuFile = new File("src/com/me/assets/waifu.png");
+    public static final File waifu_file = new File("src/com/me/assets/waifu.png"); // TODO: put in root directory
 
 
     public static void main(String[] args) {
@@ -38,11 +38,12 @@ public class Main {
         setMemory(new Memory("csgo.exe"));
         ConfigManager cfg = ConfigManager.getInstance();
         cfg.getAllOffsets();
-        cfg.getAllStructOffsets();
+        cfg.getAllNetVars();
         SigScanner.freeMemory();
         setupMods();
         setOverlay(new Overlay(Window.get("Counter-Strike: Global Offensive")));
         overlay.display();
+        Runtime.getRuntime().addShutdownHook(new Thread(overlay::close));
 
         try {
             while (true) {
@@ -50,8 +51,9 @@ public class Main {
                 ModManager.getInstance().tickAllMods();
             }
         } catch (Throwable t) {
+            // uncaught exception thrown from a mod
+            // (((shut it down)))
             t.printStackTrace();
-            overlay.close();
             System.exit(1);
         }
 
@@ -81,6 +83,7 @@ public class Main {
             System.err.println(ex.getMessage());
             System.exit(1);
         }
+        // TODO: use something better
         GlobalScreen.addNativeKeyListener(new GlobalKeyListener());
         GlobalMouseListener m = new GlobalMouseListener();
         GlobalScreen.addNativeMouseListener(m);

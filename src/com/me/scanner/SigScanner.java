@@ -14,9 +14,9 @@ import java.util.Map;
 public class SigScanner {
     // flags
     // if the address we find is a pointer
-    public static final int READ = 1;
+    public static final int READ = 1 << 0;
     // subtract the address from the modules base address to get the offset
-    public static final int SUBTRACT = 2;
+    public static final int SUBTRACT = 1 << 1;
 
 
     private byte[] region;

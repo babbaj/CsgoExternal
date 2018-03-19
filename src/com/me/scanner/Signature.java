@@ -63,7 +63,7 @@ public class Signature {
     public static String maskFromPatternString(String values) {
         return values.replaceAll("(?<=^|\\b)[\\w|\\d]{1,2}(?=$|\\b)", "x") // replace all bytes with "x" - may be no more than 2 chars long
                      .replaceAll("[^x|?]", "") // filter any invalid characters that shouldn't be there
-                     .replaceAll("\\s", ""); // remove spaces
+                     .replaceAll("\\s", ""); // remove all spaces
     }
 
     /*public Signature flags(int flagsIn) {

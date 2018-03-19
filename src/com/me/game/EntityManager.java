@@ -1,19 +1,18 @@
 package com.me.game;
 
 import com.beaudoin.jmm.process.NativeProcess;
-import com.google.common.collect.ForwardingSet;
+import com.google.common.collect.Lists;
 import com.me.Main;
 import com.me.memory.Pointer;
 import com.sun.istack.internal.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
 import static com.me.memory.OffsetManager.*;
+import static com.me.memory.Offsets.*;
+import static com.me.memory.Offsets.Netvars.*;
 
 /**
  * Created by Babbaj on 12/1/2017.
@@ -22,7 +21,7 @@ public class EntityManager {
 
     private static EntityManager INSTANCE = new EntityManager();
 
-    private List<Entity> entityList = new CopyOnWriteArrayList<>();
+    private final List<Entity> entityList = new CopyOnWriteArrayList<>();
 
     private EntityManager() {
     }
@@ -33,7 +32,7 @@ public class EntityManager {
 
     // if the player count changes then update everything
     public void updateEntityList() {
-        long localPlayerBase = getOffset("m_dwLocalPlayer").readUnsignedInt(0);
+        long localPlayerBase = getOffset(m_dwLocalPlayer).readUnsignedInt(0);
         LocalPlayer localPlayer = new LocalPlayer(new Pointer(localPlayerBase));
         if (localPlayer.getPointer().isNull()) localPlayer = null;
         if (localPlayer != null && !containsEntity(localPlayer))  {
@@ -42,18 +41,16 @@ public class EntityManager {
             System.out.printf("Added LocalPlayer %s, Size: %d\n", Long.toHexString(localPlayer.getPointer().getAddress()).toUpperCase(), this.entityList.size());
         }
 
-
         // do we exist?
         if (localPlayer != null) {
             for (int i = 0; i < 64; i++) {
-                long entityBase = getOffset("m_dwEntityList").readUnsignedInt(i * 16);
+                long entityBase = getOffset(m_dwEntityList).readUnsignedInt(i * 16);
                 if (entityBase == localPlayerBase) continue;
                 if (!isEntityValid(entityBase)) continue;
 
                 Entity entity = new Entity(new Pointer(entityBase));
 
                 if(!entity.getPointer().isNull() && !containsEntity(entityBase)) {
-                    entity.updateEntity();
                     entityList.add(entity);
                     System.out.printf("Added entity %s, Size: %d\n", Long.toHexString(entity.getPointer().getAddress()), this.entityList.size());
                 }
@@ -61,8 +58,8 @@ public class EntityManager {
         }
 
         //entityList.removeIf(ent -> !ent.isValidEntity());
-        entityList.removeIf(ent -> !isEntityValid(ent));
         entityList.forEach(Entity::updateEntity);
+        entityList.removeIf(ent -> !isEntityValid(ent));
     }
 
     // clear the entity list
@@ -107,7 +104,7 @@ public class EntityManager {
                         .filter(ent -> ent instanceof LocalPlayer)
                         .findFirst()
                         /*.orElseGet(() -> {
-                        long p = getOffset("m_dwLocalPlayer").readUnsignedInt(0);
+                        long p = getOffset(m_dwLocalPlayer).readUnsignedInt(0);
                         LocalPlayer player = new LocalPlayer(new Pointer(p));
                         if (player.getPointer().isNull()) return null;
                         return player;
@@ -122,8 +119,9 @@ public class EntityManager {
                   .forEach(consumer);
     }
 
+    // create a copy to be safe
     public void forEachUnsynchronized(Consumer<Entity> consumer) {
-        Collections.unmodifiableList(entityList)
+        Lists.newArrayList(entityList)
                    .stream()
                    .filter(ent -> !(ent instanceof LocalPlayer))
                    .filter(Entity::isValidEntity)
@@ -132,7 +130,7 @@ public class EntityManager {
     }
 
     public Entity entityFromId(int id) {
-        long entBase = getOffset("m_dwEntityList").readUnsignedInt((id - 1) * 16);
+        long entBase = getOffset(m_dwEntityList).readUnsignedInt((id - 1) * 16);
         return getEntityFromBase(entBase);
     }
 
@@ -144,12 +142,12 @@ public class EntityManager {
     public static boolean isEntityValid(long base) {
         NativeProcess proc = Main.getMemory().getProc();
         if (base == 0) return false; // null check
-        if (getOffset("m_dwLocalPlayer").readUnsignedInt(0) == base) return true; // check if local player
-        if (proc.readBoolean(base + getStructOffset("m_bDormant"))) return false; // dormant check
-        if (proc.readInt(base + getStructOffset("m_iHealth")) <= 0) return false; // health check
-        int team = proc.readInt(base + getStructOffset("m_iTeamNum"));
+        if (getOffset(m_dwLocalPlayer).readUnsignedInt(0) == base) return true; // check if local player
+        if (proc.readBoolean(base + getNetVar(m_bDormant))) return false; // dormant check
+        if (proc.readInt(base + getNetVar(m_iHealth)) <= 0) return false; // health check
+        int team = proc.readInt(base + getNetVar(m_iTeamNum));
         if (!(team == Entity.TEAM_T || team == Entity.TEAM_CT)) return false; // team check
-        if (proc.readUnsignedInt(base + getStructOffset("m_dwBoneMatrix")) == 0) return false; // bone matrix check
+        if (proc.readUnsignedInt(base + getNetVar(m_dwBoneMatrix)) == 0) return false; // bone matrix check
 
         // all checks have passed
         return true;

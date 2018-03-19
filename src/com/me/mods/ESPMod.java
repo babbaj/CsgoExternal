@@ -26,7 +26,7 @@ public class ESPMod extends BaseMod {
     @Override
     public void render(OverlayEvent event) {
         if (waifuTex == null) {
-            waifuTex = new Texture(Main.waifuFile.getPath());
+            waifuTex = new Texture(Main.waifu_file.getPath());
             waifu = new Sprite(waifuTex);
             waifu.flip(false ,true);
         }

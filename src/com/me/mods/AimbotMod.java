@@ -90,7 +90,7 @@ public class AimbotMod extends BaseMod {
         angles.y = MathHelper.normalizeAngle(angles.y);
     }
 
-    // make sure pitch is garunteed to be between 89 and -89
+    // make sure pitch is guaranteed to be between 89 and -89
     private float clampPitch(float p) {
         return MathHelper.clamp(p, -89f, 89f);
     }

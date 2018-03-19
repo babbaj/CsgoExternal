@@ -1,11 +1,11 @@
 package com.me.config;
 
 import com.beaudoin.jmm.process.Module;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.me.Main;
+import com.me.memory.InvalidOffset;
 import com.me.memory.Offset;
 import com.me.memory.OffsetManager;
 import com.me.scanner.SigScanner;
@@ -46,23 +46,24 @@ public class ConfigManager {
     }
 
     public JsonObject readJson(File file) {
-        try {
+        try (FileReader fr = new FileReader(file.getAbsolutePath())){
             JsonParser parser = new JsonParser();
-            FileReader reader = new FileReader(file.getAbsolutePath());
-            return (JsonObject)parser.parse(reader);
+            return parser.parse(fr).getAsJsonObject();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public void getAllStructOffsets() {
+    public void getAllNetVars() {
         JsonObject json = readJson(signatures);
-        JsonObject struct_offsets = json.getAsJsonObject("struct_offsets");
+        JsonObject struct_offsets = json.getAsJsonObject("netvars");
         struct_offsets.entrySet().forEach(entry -> {
             String name = entry.getKey();
             int val = entry.getValue().getAsInt();
-            OffsetManager.addStructOffset(name, val);
+            if (val < 0)
+                System.err.println("Invalid netvar: " + entry.getKey() + " " + val);
+            OffsetManager.addNetVar(name, val);
             //System.out.printf("Name: %s, value: %d\n", name, val);
         });
     }
@@ -70,12 +71,17 @@ public class ConfigManager {
     public void getAllOffsets() {
         JsonObject json = readJson(signatures);
         JsonObject signatures = json.getAsJsonObject("signatures");
-        signatures.entrySet().forEach(entry -> {
-                                 Signature sig = signatureFromJson(entry);
-                                 int off = SigScanner.findOffset(sig);
-                                 Offset offset = new Offset(entry.getKey(), off, sig.module);
-                                 OffsetManager.addOffset(offset);
-                             });
+        signatures.entrySet()
+                .forEach(entry -> {
+                    Signature sig = signatureFromJson(entry);
+                    int off = SigScanner.findOffset(sig);
+                    Offset offset = new Offset(entry.getKey(), off, sig.module);
+                    if (off == -1) {
+                        System.err.println("Invalid offset: " + offset.getName());
+                        offset = new InvalidOffset(offset);
+                    }
+                    OffsetManager.addOffset(offset);
+                });
     }
 
 
