@@ -32,8 +32,8 @@ public class EntityManager {
 
     // if the player count changes then update everything
     public void updateEntityList() {
-        long localPlayerBase = getOffset(m_dwLocalPlayer).readUnsignedInt(0);
-        LocalPlayer localPlayer = new LocalPlayer(new Pointer(localPlayerBase));
+        long localPlayerBase = m_dwLocalPlayer.readUnsignedInt(0);
+        LocalPlayer localPlayer = new LocalPlayer(Pointer.of(localPlayerBase));
         if (localPlayer.getPointer().isNull()) localPlayer = null;
         if (localPlayer != null && !containsEntity(localPlayer))  {
             entityList.add(localPlayer);
@@ -44,11 +44,11 @@ public class EntityManager {
         // do we exist?
         if (localPlayer != null) {
             for (int i = 0; i < 64; i++) {
-                long entityBase = getOffset(m_dwEntityList).readUnsignedInt(i * 16);
+                long entityBase = m_dwEntityList.readUnsignedInt(i * 16);
                 if (entityBase == localPlayerBase) continue;
                 if (!isEntityValid(entityBase)) continue;
 
-                Entity entity = new Entity(new Pointer(entityBase));
+                Entity entity = new Entity(Pointer.of(entityBase));
 
                 if(!entity.getPointer().isNull() && !containsEntity(entityBase)) {
                     entityList.add(entity);
@@ -104,8 +104,8 @@ public class EntityManager {
                         .filter(ent -> ent instanceof LocalPlayer)
                         .findFirst()
                         /*.orElseGet(() -> {
-                        long p = getOffset(m_dwLocalPlayer).readUnsignedInt(0);
-                        LocalPlayer player = new LocalPlayer(new Pointer(p));
+                        Pointer p = getOffset(m_dwLocalPlayer).getPointer(0);
+                        LocalPlayer player = new LocalPlayer(p);
                         if (player.getPointer().isNull()) return null;
                         return player;
                         });*/
@@ -130,7 +130,7 @@ public class EntityManager {
     }
 
     public Entity entityFromId(int id) {
-        long entBase = getOffset(m_dwEntityList).readUnsignedInt((id - 1) * 16);
+        long entBase = m_dwEntityList.readUnsignedInt((id - 1) * 16);
         return getEntityFromBase(entBase);
     }
 
@@ -142,12 +142,12 @@ public class EntityManager {
     public static boolean isEntityValid(long base) {
         NativeProcess proc = Main.getMemory().getProc();
         if (base == 0) return false; // null check
-        if (getOffset(m_dwLocalPlayer).readUnsignedInt(0) == base) return true; // check if local player
-        if (proc.readBoolean(base + getNetVar(m_bDormant))) return false; // dormant check
-        if (proc.readInt(base + getNetVar(m_iHealth)) <= 0) return false; // health check
-        int team = proc.readInt(base + getNetVar(m_iTeamNum));
+        if (m_dwLocalPlayer.readUnsignedInt(0) == base) return true; // check if local player
+        if (proc.readBoolean(base + m_bDormant)) return false; // dormant check
+        if (proc.readInt(base + m_iHealth) <= 0) return false; // health check
+        int team = proc.readInt(base + m_iTeamNum);
         if (!(team == Entity.TEAM_T || team == Entity.TEAM_CT)) return false; // team check
-        if (proc.readUnsignedInt(base + getNetVar(m_dwBoneMatrix)) == 0) return false; // bone matrix check
+        if (proc.readUnsignedInt(base + m_dwBoneMatrix) == 0) return false; // bone matrix check
 
         // all checks have passed
         return true;

@@ -28,7 +28,7 @@ public class Offset {
     }
 
     public boolean isNull() {
-        return offset == 0 && !(this instanceof InvalidOffset);
+        return offset == 0;
     }
 
     public Module getModule() {
@@ -40,39 +40,48 @@ public class Offset {
     // Dereferencing methods
     //
     public int readByte(int off) {
+        nullCheck();
         return module.readByte(offset + off);
     }
 
     public boolean readBoolean(int off) {
+        nullCheck();
         return module.readBoolean(offset + off);
     }
 
     public short readShort(int off) {
+        nullCheck();
         return (short)module.readShort(offset + off);
     }
 
     public int readInt(int off) {
+        nullCheck();
         return module.readInt(offset + off);
     }
 
     public long readUnsignedInt(int off) {
+        nullCheck();
         return module.readUnsignedInt(offset + off);
     }
 
     public long readLong(int off) {
+        nullCheck();
         return module.readLong(offset + off);
     }
 
     public float readFloat(int off) {
+        nullCheck();
         return module.readFloat(offset + off);
     }
 
     public double readDouble(int off) {
+        nullCheck();
         return module.readDouble(offset + off);
     }
 
     public Pointer getPointer(int off) {
-        return new Pointer(module.readUnsignedInt(offset + off));
+        nullCheck();
+        return Pointer.of(module.readUnsignedInt(offset + off));
     }
 
     //
@@ -114,8 +123,9 @@ public class Offset {
     }
 
 
-    private void nullCheck() {
-        if (isNull()) throw new NullPointerException("null pointer: " + offset);
+    protected void nullCheck() {
+        if (isNull())
+            throw new NullPointerException("null pointer: " + offset);
     }
 
 

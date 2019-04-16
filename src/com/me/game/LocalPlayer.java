@@ -26,30 +26,30 @@ public class LocalPlayer extends Entity {
 
     @Deprecated // not implemented
     public int getShotsFired() {
-        return (int)getPointer().readUnsignedInt(getNetVar(m_iShotsFired));
+        return (int)getPointer().readUnsignedInt(m_iShotsFired);
     }
 
     public Vec2f getPunch() {
-        float x = getPointer().readFloat(getNetVar(m_vecPunch));
-        float y = getPointer().readFloat(getNetVar(m_vecPunch) + 0x4);
+        float x = getPointer().readFloat(m_vecPunch);
+        float y = getPointer().readFloat(m_vecPunch + 0x4);
         return new Vec2f(x, y);
     }
 
     public float getFlashAlpha() {
-        return getPointer().readFloat(getNetVar(m_flFlashMaxAlpha));
+        return getPointer().readFloat(m_flFlashMaxAlpha);
     }
 
     public int getCrosshairId() {
-        return getPointer().readInt(getNetVar(m_iCrosshairId));
+        return getPointer().readInt(m_iCrosshairId);
     }
 
     public void writePunch(float x, float y) {
-        getPointer().writeFloat(x, getNetVar(m_vecPunch));
-        getPointer().writeFloat(y, getNetVar(m_vecPunch) + 0x4);
+        getPointer().writeFloat(x, m_vecPunch);
+        getPointer().writeFloat(y, m_vecPunch + 0x4);
     }
 
     public void writeFlashAlpha(float alpha) {
-        getPointer().writeFloat(alpha, getNetVar(m_flFlashMaxAlpha));
+        getPointer().writeFloat(alpha, m_flFlashMaxAlpha);
     }
 
     @Deprecated // not implemented
@@ -58,19 +58,19 @@ public class LocalPlayer extends Entity {
     }
 
     public void writeJump(int mode) {
-        getOffset(dwForceJump).writeInt(mode, 0);
+        dwForceJump.writeInt(mode, 0);
     }
 
     public void writeViewAngles(Vec2f vec) {
-        Pointer clientState = getOffset(dwClientState).getPointer(0);
-        int viewAngleOffset = getOffsetVal(dwClientState_ViewAngles);
+        Pointer clientState = dwClientState.getPointer(0);
+        int viewAngleOffset = dwClientState_ViewAngles.getOffset();
         clientState.writeFloat(vec.x, viewAngleOffset);
         clientState.writeFloat(vec.y, viewAngleOffset + 0x4);
     }
 
     public void writeRoll(float roll) {
-        Pointer angles = getOffset(dwClientState).getPointer(0);
-        angles.writeFloat(roll, getOffsetVal(dwClientState_ViewAngles) + 0x8);
+        Pointer angles = dwClientState.getPointer(0);
+        angles.writeFloat(roll, dwClientState_ViewAngles.getOffset() + 0x8);
     }
 
     public void pressMouse(int button) {

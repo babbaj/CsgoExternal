@@ -5,6 +5,7 @@ import java.util.*;
 /**
  * Created by Babbaj on 12/1/2017.
  */
+@Deprecated
 public class OffsetManager {
 
     private static final Map<String, Offset> offsetMap = new HashMap<>();
@@ -40,10 +41,12 @@ public class OffsetManager {
         return Objects.requireNonNull(offsetMap.get(name), "Unknown offset: " + name);
     }
 
+
     public static int getNetVar(String name) {
         Integer val = netVarMap.get(name);
+        Objects.requireNonNull(val, "Unknown netvar: " + name);
         if (val < 0) throw new IllegalStateException("Attempted to use invalid netvar " + name);
-        return Objects.requireNonNull(val, "Unknown netvar: " + name);
+        return val;
     }
 
     public static void addNetVar(String name, int value) {

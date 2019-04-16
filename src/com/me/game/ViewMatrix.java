@@ -21,7 +21,7 @@ public class ViewMatrix {
     }
 
     public static ViewMatrix getInstance() {
-        return INSTANCE == null ? INSTANCE = new ViewMatrix(getOffset(dwViewMatrix)) : INSTANCE;
+        return INSTANCE == null ? INSTANCE = new ViewMatrix(dwViewMatrix) : INSTANCE;
     }
 
     public float[][] getViewMatrix() {

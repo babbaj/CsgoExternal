@@ -12,10 +12,13 @@ public class Pointer {
 
     private long address;
 
-    public Pointer(long addressIn) {
+    protected Pointer(long addressIn) {
         this.address = addressIn;
     }
 
+    public static Pointer of(long addressIn) {
+        return new Pointer(addressIn);
+    }
 
     public long getAddress() {
         return this.address;

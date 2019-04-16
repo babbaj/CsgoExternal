@@ -2,6 +2,7 @@ package com.me.game;
 
 import com.me.memory.Pointer;
 import com.me.utils.Vec3f;
+import com.sun.jna.platform.win32.Win32Exception;
 
 import static com.me.memory.Offsets.*;
 import static com.me.memory.Offsets.Netvars.*;
@@ -61,7 +62,6 @@ public class Entity {
     }
 
     public void updateEntity() {
-        this.headPos = readBonePos(Bones.HEAD.id()); // this should be done first?
         this.name = readName();
         this.health = readHealth();
         this.team = readTeam();
@@ -72,37 +72,38 @@ public class Entity {
         this.viewOffsets = readViewOffsets();
         this.velocity = readVelocity();
         this.dormant = readDormant();
+        this.headPos = readBonePos(Bones.HEAD.id());
     }
 
 
     public int readHealth() {
-        return pointer.readInt(getNetVar(m_iHealth));
+        return pointer.readInt(m_iHealth);
     }
 
     public int readTeam() {
-        return pointer.readInt(getNetVar(m_iTeamNum));
+        return pointer.readInt(m_iTeamNum);
     }
 
     public boolean readDormant() {
-        return pointer.readBoolean(getNetVar(m_bDormant));
+        return pointer.readBoolean(m_bDormant);
     }
 
     public int readFlags() {
-        return (int)pointer.readUnsignedInt(getNetVar(m_fFlags));
+        return (int)pointer.readUnsignedInt(m_fFlags);
     }
 
     public int readColor() {
-        return (int)pointer.readUnsignedInt(getNetVar(m_clrRender));
+        return (int)pointer.readUnsignedInt(m_clrRender);
     }
 
     public int readGlowIndex() {
-        return pointer.readInt(getNetVar(m_iGlowIndex));
+        return pointer.readInt(m_iGlowIndex);
     }
 
     public Vec3f readPos() {
-        float x = pointer.readFloat(getNetVar(m_vecOrigin));
-        float z = pointer.readFloat(getNetVar(m_vecOrigin) + 0x4);
-        float y = pointer.readFloat(getNetVar(m_vecOrigin) + 0x8);
+        float x = pointer.readFloat(m_vecOrigin);
+        float z = pointer.readFloat(m_vecOrigin + 0x4);
+        float y = pointer.readFloat(m_vecOrigin + 0x8);
         return new Vec3f(x, y, z);
     }
 
@@ -112,30 +113,36 @@ public class Entity {
             System.err.println("null bone matrix");
             return new Vec3f(0, 0, 0); // i shouldnt have to do this
         }
-        float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
-        float z = boneMatrix.readFloat(0x30 * bone + 0x1C);
-        float y = boneMatrix.readFloat(0x30 * bone + 0x2C);
-        return new Vec3f(x, y, z);
+        try {
+            float x = boneMatrix.readFloat(0x30 * bone + 0x0C);
+            float z = boneMatrix.readFloat(0x30 * bone + 0x1C);
+            float y = boneMatrix.readFloat(0x30 * bone + 0x2C);
+            return new Vec3f(x, y, z);
+        } catch (Win32Exception e) {
+            System.err.println("ptr: " + boneMatrix.getAddress() + " bone: " + bone + " isDormant: " + dormant);
+            e.printStackTrace();
+            return new Vec3f(0, 0, 0);
+        }
     }
 
 
     public Vec3f readVelocity() {
-        float x = pointer.readFloat(getNetVar(m_vecVelocity));
-        float z = pointer.readFloat(getNetVar(m_vecVelocity) + 0x4);
-        float y = pointer.readFloat(getNetVar(m_vecVelocity) + 0x8);
+        float x = pointer.readFloat(m_vecVelocity);
+        float z = pointer.readFloat(m_vecVelocity + 0x4);
+        float y = pointer.readFloat(m_vecVelocity + 0x8);
         return new Vec3f(x, y, z);
     }
 
     public float readPitch() {
-        return pointer.readFloat(getNetVar(m_dwViewAngles));
+        return pointer.readFloat(m_dwViewAngles);
     }
 
     public float readYaw() {
-        return pointer.readFloat(getNetVar(m_dwViewAngles) + 0x4);
+        return pointer.readFloat(m_dwViewAngles + 0x4);
     }
 
     public float readRoll() {
-        return pointer.readFloat(getNetVar(m_dwViewAngles) + 0x8);
+        return pointer.readFloat(m_dwViewAngles + 0x8);
     }
 
     public Vec3f readViewAngles() {
@@ -146,28 +153,28 @@ public class Entity {
     }
 
     public Vec3f readViewOffsets() {
-        float x = pointer.readFloat(getNetVar(m_vecViewOffset));
-        float z = pointer.readFloat(getNetVar(m_vecViewOffset) + 0x4);
-        float y = pointer.readFloat(getNetVar(m_vecViewOffset) + 0x8);
+        float x = pointer.readFloat(m_vecViewOffset);
+        float z = pointer.readFloat(m_vecViewOffset + 0x4);
+        float y = pointer.readFloat(m_vecViewOffset + 0x8);
         if (y == 0) y = this.isCrouching() ? 32f : 64.06f; // TODO: get correct crouch offset
         return new Vec3f(x, y, z);
     }
 
     public Pointer readBoneMatrix() {
-        return new Pointer(pointer.readUnsignedInt(getNetVar(m_dwBoneMatrix)));
+        return Pointer.of(pointer.readUnsignedInt(m_dwBoneMatrix));
     }
 
     public String readName() {
-        Pointer radarBase = getOffset(dwRadarBase).getPointer(0);
+        Pointer radarBase = dwRadarBase.getPointer(0);
         long radar = radarBase.readUnsignedInt(0x54);
         int id = EntityManager.getInstance().getEntityList().indexOf(this);
-        Pointer namePointer = new Pointer(radar + ((0x1E0 * (id)) + 0x24));
+        Pointer namePointer = Pointer.of(radar + ((0x1E0 * (id)) + 0x24));
         String name = namePointer.readString(0);
         return name;
     }
 
     public void writeColor(int color) {
-        pointer.writeInt(color, getNetVar(m_clrRender));
+        pointer.writeInt(color, m_clrRender);
     }
 
     @Deprecated // not implemented
@@ -176,7 +183,7 @@ public class Entity {
     }
 
     public void writeGlow(float r, float g, float b, float a) {
-        Pointer glowObj = getOffset(m_dwGlowObjectManager).getPointer(0);
+        Pointer glowObj = m_dwGlowObjectManager.getPointer(0);
         int glowIndex = readGlowIndex();
         glowObj.writeFloat(r, (glowIndex * 0x38) + 0x4);
         glowObj.writeFloat(g, (glowIndex * 0x38) + 0x8);
@@ -188,7 +195,7 @@ public class Entity {
     }
 
     public void writeChams(int r, int g, int b, int a) {
-        int clrRender = getNetVar(m_clrRender);
+        int clrRender = m_clrRender;
         this.pointer.writeInt(r, clrRender);
         this.pointer.writeInt(g , clrRender + 1);
         this.pointer.writeInt(b , clrRender + 2);

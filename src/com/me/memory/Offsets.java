@@ -6,39 +6,39 @@ package com.me.memory;
  */
 // interface for offset/netvar keys
 public interface Offsets {
-    // TODO: set all of these with reflection
+    // to be initialized with reflection
+
+    // All fields must me initialized to null so the compiler chooses to get the value at runtime.
 
     interface Netvars {
-        String m_iHealth = "m_iHealth";
-        String m_iTeamNum = "m_iTeamNum";
-        String m_iGlowIndex = "m_iGlowIndex";
-        String m_bDormant = "m_bDormant";
-        String m_fFlags = "m_fFlags";
-        String m_clrRender = "m_clrRender";
-        String m_vecOrigin = "m_vecOrigin";
-        String m_vecVelocity = "m_vecVelocity";
-        String m_dwViewAngles = "m_dwViewAngles";
-        String m_vecViewOffset = "m_vecViewOffset";
-        String m_dwBoneMatrix = "m_dwBoneMatrix";
-        String m_iShotsFired = "m_iShotsFired";
-        String m_vecPunch = "m_vecPunch";
-        String m_flFlashMaxAlpha = "m_flFlashMaxAlpha";
-        String m_iCrosshairId = "m_iCrosshairId";
+        Integer m_iHealth = null;
+        Integer m_iTeamNum = null;
+        Integer m_iGlowIndex = null;
+        Integer m_bDormant = null;
+        Integer m_fFlags = null;
+        Integer m_clrRender = null;
+        Integer m_vecOrigin = null;
+        Integer m_vecVelocity = null;
+        Integer m_dwViewAngles = null;
+        Integer m_vecViewOffset = null;
+        Integer m_dwBoneMatrix = null;
+        Integer m_iShotsFired = null;
+        Integer m_vecPunch = null;
+        Integer m_flFlashMaxAlpha = null;
+        Integer m_iCrosshairId = null;
     }
 
     //
     // OFFSETS
     //
-    String m_dwLocalPlayer = "m_dwLocalPlayer";
-    String m_dwEntityList = "m_dwEntityList";
-    String m_dwGlowObjectManager = "m_dwGlowObjectManager";
-    String dwClientState = "dwClientState";
-    String dwClientState_ViewAngles = "dwClientState_ViewAngles";
-    String dwbSendPackets = "dwbSendPackets";
-    String dwRadarBase = "dwRadarBase";
-    String dwViewMatrix = "dwViewMatrix";
-    String dwForceJump = "dwForceJump";
-    String dwForceAttack = "dwForceAttack";
-
-
+    Offset m_dwLocalPlayer = null;
+    Offset m_dwEntityList = null;
+    Offset m_dwGlowObjectManager = null;
+    Offset dwClientState = null;
+    Offset dwClientState_ViewAngles = null;
+    Offset dwbSendPackets = null;
+    Offset dwRadarBase = null;
+    Offset dwViewMatrix = null;
+    Offset dwForceJump = null;
+    Offset dwForceAttack = null;
 }

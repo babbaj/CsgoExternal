@@ -29,7 +29,7 @@ public class EntityManagerService extends BaseMod {
     private int getPlayerCount() {
         int count = 0;
         for (int i = 0; i < 64; i++) {
-            long entBase = getOffset(m_dwEntityList).readUnsignedInt(i * 16);
+            long entBase = m_dwEntityList.readUnsignedInt(i * 16);
             if (!EntityManager.isEntityValid(entBase)) continue;
             count++;
         }

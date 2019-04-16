@@ -48,7 +48,7 @@ public class Utils {
     }
 
     // TODO: refactor this
-    public static Entity closestToCrosshair(LocalPlayer player) {
+    public static Entity closestToCrosshair(LocalPlayer localPlayer) {
         float[][] matrix = ViewMatrix.getInstance().getViewMatrix();
         float centerX = Main.getRes()[0]/2;
         float centerY = Main.getRes()[1]/2;
@@ -56,9 +56,10 @@ public class Utils {
         Entity out = null;
         float shortest = Float.MAX_VALUE;
         for (Entity ent : EntityManager.getInstance().getEntityList()) {
-            if (ent == player) continue;
+            if (ent == localPlayer) continue;
             if (!ent.isValidEntity()) continue;
-            ScreenPos pos = Utils.toScreen(ent.getHeadPos(), matrix, player);
+            if (ent.getTeam() == localPlayer.getTeam()) continue; // comment this out
+            ScreenPos pos = Utils.toScreen(ent.getHeadPos(), matrix, localPlayer);
             if (pos == null || !pos.isVisible) continue;
             float dist = MathHelper.distanceBetweenPoints(center, pos.vec);
 

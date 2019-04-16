@@ -2,15 +2,19 @@ package com.me;
 
 import java.awt.*;
 import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 
 import com.me.config.ConfigManager;
 import com.me.game.ViewMatrix;
 import com.me.keys.GlobalKeyListener;
 import com.me.keys.GlobalMouseListener;
 import com.me.memory.Memory;
+import com.me.memory.Offsets;
 import com.me.mods.*;
 import com.me.mods.AntiFlashMod;
 import com.me.mods.util.EntityManagerService;
@@ -56,8 +60,31 @@ public class Main {
             t.printStackTrace();
             System.exit(1);
         }
-
     }
+
+    /*static {
+        try {
+            Field modifiersField = Field.class.getDeclaredField("modifiers");
+            modifiersField.setAccessible(true);
+
+            Field[] offsetFields = Offsets.class.getDeclaredFields();
+            Field[] netvarFields = Offsets.Netvars.class.getDeclaredFields();
+            Stream.of(offsetFields, netvarFields)
+                    .flatMap(Stream::of)
+                    .forEach(f -> {
+                        try {
+                            modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL); // remove final modifier
+                            if (f.get(null) == null)
+                                f.set(null, f.getName());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+    }*/
 
 
     private static void setupMods() {
@@ -66,7 +93,7 @@ public class Main {
         modManager.registerMod(new EntityManagerService());
         modManager.registerMod(new GlowMod());
         modManager.registerMod(new AntiFlashMod());
-        modManager.registerMod(new TriggerbotMod());
+        //modManager.registerMod(new TriggerbotMod());
         modManager.registerMod(new AimbotMod());
         //modManager.registerMod(new ESPMod());
         modManager.registerMod(new BhopMod());
